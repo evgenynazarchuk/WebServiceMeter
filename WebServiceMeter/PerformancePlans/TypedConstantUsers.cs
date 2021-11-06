@@ -1,0 +1,31 @@
+﻿using System.Threading.Tasks;
+using WebServiceMeter.Interfaces;
+using WebServiceMeter.PerformancePlans;
+
+namespace WebServiceMeter
+{
+    public sealed class ConstantUsers<TData> : BasicConstantUsers
+        where TData : class
+    {
+        private readonly IDataReader<TData> dataReader;
+
+        private readonly bool reuseDataInLoop;
+
+        public ConstantUsers(
+            ITypedUser<TData> user,
+            int usersCount,
+            IDataReader<TData> dataReader,
+            int userLoopCount = 1,
+            bool reuseDataInLoop = true)
+            : base(user, usersCount, userLoopCount)
+        {
+            this.dataReader = dataReader;
+            this.reuseDataInLoop = reuseDataInLoop;
+        }
+
+        public override Task InvokeUserAsync()
+        {
+            return ((ITypedUser<TData>)this.User).InvokeAsync(this.dataReader, this.reuseDataInLoop, this.userLoopCount);
+        }
+    }
+}
