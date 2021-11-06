@@ -11,16 +11,22 @@ namespace WebServiceMeter
             string? filename)
         {
             this.StatusCode = statusCode;
-            this.ContentAsBytes = content;
+            this.Content = content;
             this.Filename = filename;
         }
 
         public readonly int StatusCode;
 
-        public readonly byte[] ContentAsBytes;
+        public readonly byte[] Content;
 
         public readonly string? Filename = null;
 
-        public string ContentAsUtf8String => Encoding.UTF8.GetString(this.ContentAsBytes);
+        public string ContentAsUTF8 => Encoding.UTF8.GetString(this.Content);
+
+        public string ContentAsASCII => Encoding.ASCII.GetString(this.Content);
+
+        public string ContentAsUnicode => Encoding.Unicode.GetString(this.Content);
+
+        public string ContentAsUTF32 => Encoding.UTF32.GetString(this.Content);
     }
 }

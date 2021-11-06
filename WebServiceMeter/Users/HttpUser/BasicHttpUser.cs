@@ -59,7 +59,7 @@ namespace WebServiceMeter.Users
                 this.UserName,
                 requestLabel);
 
-            return httpResponse.ContentAsUtf8String;
+            return httpResponse.ContentAsUTF8;
         }
 
         public async Task<string> Delete(
@@ -75,7 +75,7 @@ namespace WebServiceMeter.Users
                 this.UserName,
                 requestLabel);
 
-            return httpResponse.ContentAsUtf8String;
+            return httpResponse.ContentAsUTF8;
         }
     }
 }

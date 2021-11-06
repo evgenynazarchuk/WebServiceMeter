@@ -3,7 +3,7 @@ using System.IO;
 using System.Text;
 using WebServiceMeter.Interfaces;
 
-namespace WebServiceMeter
+namespace WebServiceMeter.DataReader
 {
     public abstract class DataReader<TData> : IDataReader<TData>
         where TData : class

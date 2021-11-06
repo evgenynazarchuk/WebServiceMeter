@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using WebServiceMeter;
 using WebServiceMeter.Interfaces;
+using WebServiceMeter.DataReader;
 
 namespace WebServiceMeter.Reports
 {

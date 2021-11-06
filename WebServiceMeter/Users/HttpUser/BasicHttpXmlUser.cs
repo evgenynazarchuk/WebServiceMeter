@@ -9,200 +9,213 @@ namespace WebServiceMeter.Users
 {
     public abstract partial class BasicHttpUser : BasicUser
     {
-        public async Task<XmlDocument> GetXmlDocumentAsync(
-            string requestUri,
-            Dictionary<string, string>? requestHeaders = null
-            )
-        {
-            HttpResponse response = await this.Tool.RequestAsync(
-                httpMethod: HttpMethod.Get,
-                path: requestUri,
-                requestHeaders: requestHeaders);
-
-            var content = response.ContentAsUtf8String;
-
-            var xmlDocument = new XmlDocument();
-            xmlDocument.LoadXml(content);
-
-            return xmlDocument;
-        }
-        
-        public Task<TypeResponseObject?> GetXmlAsync<TypeResponseObject>(
-            string requestUri,
-            Dictionary<string, string>? requestHeaders = null)
-            where TypeResponseObject : class, new()
-        {
-            return this.Tool.RequestXmlAsync<TypeResponseObject>(
-                httpMethod: HttpMethod.Get,
-                requestUri: requestUri,
-                requestHeaders: requestHeaders);
-        }
-
-        public Task<HttpStatusCode> GetXmlAsync<TypeRequestObject>(
-            string requestUri,
-            TypeRequestObject requestObject,
+        //
+        public Task<XmlDocument> GetXmlDocument(
+            string path,
             Dictionary<string, string>? requestHeaders = null,
-            Encoding? requestContentEncoding = null
-            )
-            where TypeRequestObject : class, new()
+            string requestLabel = "")
         {
-            return this.Tool.RequestXmlAsync<TypeRequestObject>(
-                httpMethod: HttpMethod.Get,
-                requestUri: requestUri,
+            return this.Tool.GetXmlDocumentAsync(
+                path: path,
+                requestHeaders: requestHeaders,
+                userName: this.UserName,
+                requestLabel: requestLabel);
+        }
+
+        //        
+        public Task<TResponse?> GetAsXml<TResponse>(
+            string path,
+            Dictionary<string, string>? requestHeaders = null,
+            string requestLabel = "")
+            where TResponse : class, new()
+        {
+            return this.Tool.GetAsXmlAsync<TResponse>(
+                path: path,
+                requestHeaders: requestHeaders,
+                userName: this.UserName,
+                requestLabel: requestLabel);
+        }
+
+        public Task<HttpStatusCode> GetAsXml<TRequest>(
+            string path,
+            TRequest requestObject,
+            Dictionary<string, string>? requestHeaders = null,
+            Encoding? requestContentEncoding = null,
+            string requestLabel = "")
+            where TRequest : class, new()
+        {
+            return this.Tool.GetAsXmlAsync<TRequest>(
+                path: path,
                 requestObject: requestObject,
                 requestHeaders: requestHeaders,
-                requestContentEncoding: requestContentEncoding);
+                requestContentEncoding: requestContentEncoding,
+                userName: this.UserName,
+                requestLabel: requestLabel);
         }
 
-        public Task<TypeResponseObject?> GetXmlAsync<TypeResponseObject, TypeRequestObject>(
-            string requestUri,
-            TypeRequestObject requestObject,
+        public Task<TResponse?> GetAsXml<TResponse, TRequest>(
+            string path,
+            TRequest requestObject,
             Dictionary<string, string>? requestHeaders = null,
-            Encoding? requestContentEncoding = null
-            )
-            where TypeRequestObject : class, new()
-            where TypeResponseObject : class, new()
+            Encoding? requestContentEncoding = null,
+            string requestLabel = "")
+            where TRequest : class, new()
+            where TResponse : class, new()
         {
-            return this.Tool.RequestXmlAsync<TypeResponseObject, TypeRequestObject>(
-                httpMethod: HttpMethod.Get,
-                requestUri: requestUri,
+            return this.Tool.GetAsXmlAsync<TResponse, TRequest>(
+                path: path,
                 requestObject: requestObject,
                 requestHeaders: requestHeaders,
-                requestContentEncoding: requestContentEncoding);
+                requestContentEncoding: requestContentEncoding,
+                userName: this.UserName,
+                requestLabel: requestLabel);
         }
 
-        public Task<HttpStatusCode> PostXmlAsync<TypeRequestObject>(
-            string requestUri,
-            TypeRequestObject requestObject,
+        //
+        public Task<HttpStatusCode> PostAsXml<TRequest>(
+            string path,
+            TRequest requestObject,
             Dictionary<string, string>? requestHeaders = null,
-            Encoding? requestContentEncoding = null
-            )
-            where TypeRequestObject : class, new()
+            Encoding? requestContentEncoding = null,
+            string requestLabel = "")
+            where TRequest : class, new()
         {
-            return this.Tool.RequestXmlAsync<TypeRequestObject>(
-                httpMethod: HttpMethod.Post,
-                requestUri: requestUri,
+            return this.Tool.PostAsXmlAsync<TRequest>(
+                path: path,
                 requestObject: requestObject,
                 requestHeaders: requestHeaders,
-                requestContentEncoding: requestContentEncoding);
+                requestContentEncoding: requestContentEncoding,
+                userName: this.UserName,
+                requestLabel: requestLabel);
         }
 
-        public Task<TypeResponseObject?> PostXmlAsync<TypeResponseObject>(
-            string requestUri,
-            Dictionary<string, string>? requestHeaders = null
-            )
-            where TypeResponseObject : class, new()
-        {
-            return this.Tool.RequestXmlAsync<TypeResponseObject>(
-                httpMethod: HttpMethod.Post,
-                requestUri: requestUri,
-                requestHeaders: requestHeaders);
-        }
-
-        public Task<TypeResponseObject?> PostXmlAsync<TypeResponseObject, TypeRequestObject>(
-            string requestUri,
-            TypeRequestObject requestObject,
+        public Task<TResponse?> PostAsXml<TResponse>(
+            string path,
             Dictionary<string, string>? requestHeaders = null,
-            Encoding? requestContentEncoding = null
-            )
-            where TypeRequestObject : class, new()
-            where TypeResponseObject : class, new()
+            string requestLabel = "")
+            where TResponse : class, new()
         {
-            return this.Tool.RequestXmlAsync<TypeResponseObject, TypeRequestObject>(
-                httpMethod: HttpMethod.Post,
-                requestUri: requestUri,
+            return this.Tool.PostAsXmlAsync<TResponse>(
+                path: path,
+                requestHeaders: requestHeaders,
+                userName: this.UserName,
+                requestLabel: requestLabel);
+        }
+
+        public Task<TResponse?> PostAsXml<TResponse, TRequest>(
+            string path,
+            TRequest requestObject,
+            Dictionary<string, string>? requestHeaders = null,
+            Encoding? requestContentEncoding = null,
+            string requestLabel = "")
+            where TRequest : class, new()
+            where TResponse : class, new()
+        {
+            return this.Tool.PostAsXmlAsync<TResponse, TRequest>(
+                path: path,
                 requestObject: requestObject,
                 requestHeaders: requestHeaders,
-                requestContentEncoding: requestContentEncoding);
+                requestContentEncoding: requestContentEncoding,
+                userName: this.UserName,
+                requestLabel: requestLabel);
         }
 
-        public Task<TypeResponseObject?> PutXmlAsync<TypeResponseObject>(
-            string requestUri,
-            Dictionary<string, string>? requestHeaders = null
-            )
-            where TypeResponseObject : class, new()
-        {
-            return this.Tool.RequestXmlAsync<TypeResponseObject>(
-                httpMethod: HttpMethod.Put,
-                requestUri: requestUri,
-                requestHeaders: requestHeaders);
-        }
-
-        public Task<HttpStatusCode> PutXmlAsync<TypeRequestObject>(
-            string requestUri,
-            TypeRequestObject requestObject,
+        //
+        public Task<TResponse?> PutAsXml<TResponse>(
+            string path,
             Dictionary<string, string>? requestHeaders = null,
-            Encoding? requestContentEncoding = null
-            )
-            where TypeRequestObject : class, new()
+            string requestLabel = "")
+            where TResponse : class, new()
         {
-            return this.Tool.RequestXmlAsync<TypeRequestObject>(
-                httpMethod: HttpMethod.Put,
-                requestUri: requestUri,
+            return this.Tool.PutAsXmlAsync<TResponse>(
+                path: path,
+                requestHeaders: requestHeaders,
+                userName: this.UserName,
+                requestLabel: requestLabel);
+        }
+
+        public Task<HttpStatusCode> PutAsXml<TRequest>(
+            string path,
+            TRequest requestObject,
+            Dictionary<string, string>? requestHeaders = null,
+            Encoding? requestContentEncoding = null,
+            string requestLabel = "")
+            where TRequest : class, new()
+        {
+            return this.Tool.PutAsXmlAsync<TRequest>(
+                path: path,
                 requestObject: requestObject,
                 requestHeaders: requestHeaders,
-                requestContentEncoding: requestContentEncoding);
+                requestContentEncoding: requestContentEncoding,
+                userName: this.UserName,
+                requestLabel: requestLabel);
         }
 
-        public Task<TypeResponseObject?> PutXmlAsync<TypeResponseObject, TypeRequestObject>(
-            string requestUri,
-            TypeRequestObject requestObject,
+        public Task<TResponse?> PutAsXml<TResponse, TRequest>(
+            string path,
+            TRequest requestObject,
             Dictionary<string, string>? requestHeaders = null,
-            Encoding? requestContentEncoding = null
-            )
-            where TypeRequestObject : class, new()
-            where TypeResponseObject : class, new()
+            Encoding? requestContentEncoding = null,
+            string requestLabel = "")
+            where TRequest : class, new()
+            where TResponse : class, new()
         {
-            return this.Tool.RequestXmlAsync<TypeResponseObject, TypeRequestObject>(
-                httpMethod: HttpMethod.Put,
-                requestUri: requestUri,
+            return this.Tool.PutAsXmlAsync<TResponse, TRequest>(
+                path: path,
                 requestObject: requestObject,
                 requestHeaders: requestHeaders,
-                requestContentEncoding: requestContentEncoding);
+                requestContentEncoding: requestContentEncoding,
+                userName: this.UserName,
+                requestLabel: requestLabel);
         }
 
-        public Task<TypeResponseObject?> DeleteXmlAsync<TypeResponseObject>(
-            string requestUri,
-            Dictionary<string, string>? requestHeaders = null
-            )
-            where TypeResponseObject : class, new()
-        {
-            return this.Tool.RequestXmlAsync<TypeResponseObject>(
-                httpMethod: HttpMethod.Delete,
-                requestUri: requestUri,
-                requestHeaders: requestHeaders);
-        }
-
-        public Task<HttpStatusCode> DeleteXmlAsync<TypeRequestObject>(
-            string requestUri,
-            TypeRequestObject requestObject,
+        //
+        public Task<TResponse?> DeleteAsXml<TResponse>(
+            string path,
             Dictionary<string, string>? requestHeaders = null,
-            Encoding? requestContentEncoding = null
-            )
-            where TypeRequestObject : class, new()
+            string requestLabel = "")
+            where TResponse : class, new()
         {
-            return this.Tool.RequestXmlAsync<TypeRequestObject>(
-                httpMethod: HttpMethod.Delete,
-                requestUri: requestUri, requestObject,
+            return this.Tool.DeleteAsXmlAsync<TResponse>(
+                path: path,
                 requestHeaders: requestHeaders,
-                requestContentEncoding: requestContentEncoding);
+                userName: this.UserName,
+                requestLabel: requestLabel);
         }
 
-        public Task<TypeResponseObject?> DeleteXmlAsync<TypeResponseObject, TypeRequestObject>(
-            string requestUri,
-            TypeRequestObject requestObject,
+        public Task<HttpStatusCode> DeleteAsXml<TRequest>(
+            string path,
+            TRequest requestObject,
             Dictionary<string, string>? requestHeaders = null,
-            Encoding? requestContentEncoding = null
-            )
-            where TypeRequestObject : class, new()
-            where TypeResponseObject : class, new()
+            Encoding? requestContentEncoding = null,
+            string requestLabel = "")
+            where TRequest : class, new()
         {
-            return this.Tool.RequestXmlAsync<TypeResponseObject, TypeRequestObject>(
-                httpMethod: HttpMethod.Delete,
-                requestUri: requestUri,
+            return this.Tool.DeleteAsXmlAsync<TRequest>(
+                path: path, 
                 requestObject: requestObject,
                 requestHeaders: requestHeaders,
-                requestContentEncoding: requestContentEncoding);
+                requestContentEncoding: requestContentEncoding,
+                userName: this.UserName,
+                requestLabel: requestLabel);
+        }
+
+        public Task<TypeResponseObject?> DeleteAsXml<TypeResponseObject, TypeRequestObject>(
+            string path,
+            TypeRequestObject requestObject,
+            Dictionary<string, string>? requestHeaders = null,
+            Encoding? requestContentEncoding = null,
+            string requestLabel = "")
+            where TypeRequestObject : class, new()
+            where TypeResponseObject : class, new()
+        {
+            return this.Tool.DeleteAsXmlAsync<TypeResponseObject, TypeRequestObject>(
+                path: path,
+                requestObject: requestObject,
+                requestHeaders: requestHeaders,
+                requestContentEncoding: requestContentEncoding,
+                userName: this.UserName,
+                requestLabel: requestLabel);
         }
     }
 }

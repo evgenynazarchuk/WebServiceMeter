@@ -1,73 +1,79 @@
 ﻿using System.Collections.Generic;
 using System.Net.Http;
-using System.Threading.Tasks;
 using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
+using WebServiceMeter.Tools.HttpTool;
 
-namespace WebServiceMeter.Users
+namespace WebServiceMeter
 {
-    public abstract partial class BasicHttpUser : BasicUser
+    public partial class HttpTool
     {
-        public Task<HttpResponse> Get(
+        public Task<HttpResponse> GetAsync(
             string path,
             Dictionary<string, string>? requestHeaders = null,
             string? requestContent = null,
             Encoding? requestContentEncoding = null,
+            string userName = "",
             string requestLabel = "")
         {
-            return this.Tool.GetAsync(
+            return this.RequestAsync(
+                httpMethod: HttpMethod.Get,
                 path: path,
-                requestContent: requestContent,
-                requestContentEncoding: requestContentEncoding,
+                requestContent: new StringContent(requestContent ?? "", requestContentEncoding ?? Encoding.UTF8),
                 requestHeaders: requestHeaders,
-                userName: this.UserName,
+                userName: userName,
                 requestLabel: requestLabel);
         }
 
-        public Task<HttpResponse> Post(
+        public Task<HttpResponse> PostAsync(
             string path,
             Dictionary<string, string>? requestHeaders = null,
             string? requestContent = null,
             Encoding? requestContentEncoding = null,
+            string userName = "",
             string requestLabel = "")
         {
-            return this.Tool.PostAsync(
+            return this.RequestAsync(
+                httpMethod: HttpMethod.Post,
                 path: path,
-                requestContent: requestContent,
-                requestContentEncoding: requestContentEncoding,
+                requestContent: new StringContent(requestContent ?? "", requestContentEncoding ?? Encoding.UTF8),
                 requestHeaders: requestHeaders,
-                userName: this.UserName,
+                userName: userName,
                 requestLabel: requestLabel);
         }
 
-        public Task<HttpResponse> Put(
+        public Task<HttpResponse> PutAsync(
             string path,
             Dictionary<string, string>? requestHeaders = null,
             string? requestContent = null,
             Encoding? requestContentEncoding = null,
+            string userName = "",
             string requestLabel = "")
         {
-            return this.Tool.PutAsync(
+            return this.RequestAsync(
+                httpMethod: HttpMethod.Put,
                 path: path,
                 requestHeaders: requestHeaders,
-                requestContent: requestContent,
-                requestContentEncoding: requestContentEncoding,
-                userName: this.UserName,
+                requestContent: new StringContent(requestContent ?? "", requestContentEncoding ?? Encoding.UTF8),
+                userName: userName,
                 requestLabel: requestLabel);
         }
 
-        public Task<HttpResponse> Delete(
+        public Task<HttpResponse> DeleteAsync(
             string path,
             Dictionary<string, string>? requestHeaders = null,
             string? requestContent = null,
             Encoding? requestContentEncoding = null,
+            string userName = "",
             string requestLabel = "")
         {
-            return this.Tool.DeleteAsync(
+            return this.RequestAsync(
+                httpMethod: HttpMethod.Delete,
                 path: path,
                 requestHeaders: requestHeaders,
-                requestContent: requestContent,
-                requestContentEncoding: requestContentEncoding,
-                userName: this.UserName,
+                requestContent: new StringContent(requestContent ?? "", requestContentEncoding ?? Encoding.UTF8),
+                userName: userName,
                 requestLabel: requestLabel);
         }
     }

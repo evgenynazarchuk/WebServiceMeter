@@ -65,7 +65,7 @@ namespace WebServiceMeter.Users
         {
             HttpResponse response = await this.Tool.RequestAsync(HttpMethod.Get, path);
             string? fileName = response.Filename;
-            byte[] bytes = response.ContentAsBytes;
+            byte[] bytes = response.Content;
 
             return (fileName, bytes);
         }

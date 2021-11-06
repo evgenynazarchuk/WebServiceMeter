@@ -1,4 +1,5 @@
 ﻿using System;
+using WebServiceMeter.DataReader;
 
 namespace WebServiceMeter
 {

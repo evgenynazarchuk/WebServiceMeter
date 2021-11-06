@@ -36,9 +36,9 @@ namespace WebServiceMeter
         {
             var tasks = new List<Task>();
 
-            foreach (var logger in this.reports)
+            foreach (var report in this.reports)
             {
-                tasks.Add(logger.StartAsync());
+                tasks.Add(report.StartAsync());
             }
 
             return tasks;
@@ -46,9 +46,9 @@ namespace WebServiceMeter
 
         public void Stop()
         {
-            foreach (var logger in this.reports)
+            foreach (var report in this.reports)
             {
-                logger.Stop();
+                report.Stop();
             }
         }
     }

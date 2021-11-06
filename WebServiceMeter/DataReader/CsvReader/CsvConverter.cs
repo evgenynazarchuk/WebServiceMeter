@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WebServiceMeter
+namespace WebServiceMeter.DataReader
 {
     public static class CsvConverter
     {
