@@ -1,87 +1,79 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿/*
+ * MIT License
+ *
+ * Copyright (c) Evgeny Nazarchuk.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 
-namespace WebServiceMeter.Runner
+namespace WebServiceMeter.Runner;
+
+[Controller]
+[Route("[controller]/[action]")]
+public class TestRunnerController : ControllerBase
 {
-    [Controller]
-    [Route("[controller]/[action]")]
-    public class TestRunnerController : ControllerBase
+    private readonly TestRunnerService _testRunner;
+
+    public TestRunnerController(TestRunnerService testRunner)
     {
-        private readonly TestRunnerService _testRunner;
+        this._testRunner = testRunner;
+    }
 
-        public TestRunnerController(TestRunnerService testRunner)
+    [HttpGet]
+    public IActionResult GetTestsDetails()
+    {
+        var testsDetails = this._testRunner.GetTestsDetails();
+
+        return Ok(testsDetails);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> StartTest([FromBody] StartTestMethodDto startTestDto)
+    {
+        try
         {
-            this._testRunner = testRunner;
+            await this._testRunner.StartTestAsync(startTestDto);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
         }
 
-        //[HttpGet]
-        //public IActionResult GetTestsIdentifiers()
-        //{
-        //    var testsIdentifiers = this._testRunner.GetTestsIdentifiers();
+        return Ok();
+    }
 
-        //    return Ok(testsIdentifiers);
-        //}
+    [HttpGet]
+    public IActionResult GetStatus()
+    {
+        var status = this._testRunner.GetStatus();
 
-        //[HttpGet]
-        //public IActionResult GetTestDetail(string testClassName, string testClassMethod)
-        //{
-        //    var testDetail = this._testRunner.GetTestDetail(testClassName, testClassMethod);
-
-        //    return Ok(testDetail);
-        //}
-
-        [HttpGet]
-        public IActionResult GetTestsDetails()
+        if (status is not null)
         {
-            var testsDetails = this._testRunner.GetTestsDetails();
-
-            return Ok(testsDetails);
+            return BadRequest(status);
         }
-
-        [HttpPost]
-        public async Task<IActionResult> StartTest([FromBody] StartTestMethodDto startTestDto)
+        else
         {
-            try
-            {
-                await this._testRunner.StartTestAsync(startTestDto);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-
-            return Ok();
-        }
-
-        //[HttpGet]
-        //public IActionResult GetSimpleStatus()
-        //{
-        //    var status = this._testRunner.GetStatus();
-
-        //    if (status is not null)
-        //    {
-        //        return BadRequest("Test Runner is busy");
-        //    }
-        //    else
-        //    {
-        //        return Ok("Test Runner is available");
-        //    }
-        //}
-
-        [HttpGet]
-        public IActionResult GetStatus()
-        {
-            var status = this._testRunner.GetStatus();
-
-            if (status is not null)
-            {
-                return BadRequest(status);
-            }
-            else
-            {
-                return Ok("Test Runner is available");
-            }
+            return Ok("Test Runner is available");
         }
     }
 }

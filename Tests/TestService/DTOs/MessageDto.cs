@@ -1,7 +1,6 @@
-﻿namespace TestService.DTOs
+﻿namespace TestService.DTOs;
+
+public class MessageDto
 {
-    public class MessageDto
-    {
-        public int Delay { get; set; }
-    }
+    public int Delay { get; set; }
 }

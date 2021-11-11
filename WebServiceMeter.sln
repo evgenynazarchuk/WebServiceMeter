@@ -9,8 +9,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{E77B8C7F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestService", "Tests\TestService\TestService.csproj", "{76754786-5A41-444D-8D5C-3A00C8D8A88A}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AppExamples", "AppExamples", "{13A5B93F-AD38-4D00-A516-DAF7A8E176B5}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestService.Tests", "Tests\TestService.Tests\TestService.Tests.csproj", "{05B293D5-CCF4-4FAE-ADDF-C9B67FD5C704}"
 EndProject
 Global
@@ -37,7 +35,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{76754786-5A41-444D-8D5C-3A00C8D8A88A} = {E77B8C7F-817A-416B-854A-693543669544}
-		{13A5B93F-AD38-4D00-A516-DAF7A8E176B5} = {E77B8C7F-817A-416B-854A-693543669544}
 		{05B293D5-CCF4-4FAE-ADDF-C9B67FD5C704} = {E77B8C7F-817A-416B-854A-693543669544}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace TestService.Models
-{
-    public class Person
-    {
-        public int Id { get; set; }
+namespace TestService.Models;
 
-        public string Name {  get; set; }
-    }
+public class Person
+{
+    public int Id { get; set; }
+
+    public string Name { get; set; }
 }

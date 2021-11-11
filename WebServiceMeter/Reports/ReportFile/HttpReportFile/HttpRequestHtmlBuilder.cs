@@ -1,118 +1,142 @@
-﻿using System.Linq;
+﻿/*
+ * MIT License
+ *
+ * Copyright (c) Evgeny Nazarchuk.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+using System.Linq;
 using System.Text;
 using System.Text.Json;
 
-namespace WebServiceMeter.Reports
+namespace WebServiceMeter.Reports;
+
+public class HttpRequestHtmlBuilder : HtmlBuilder<HttpLogMessage>
 {
-    public class HttpRequestHtmlBuilder : HtmlBuilder<HttpLogMessage>
+    public HttpRequestHtmlBuilder(
+        string sourceJsonFilePath,
+        string destinationJsonFilePath)
+        : base(sourceJsonFilePath, destinationJsonFilePath) { }
+
+    protected override string GenerateHtml()
     {
-        public HttpRequestHtmlBuilder(
-            string sourceJsonFilePath,
-            string destinationJsonFilePath)
-            : base(sourceJsonFilePath, destinationJsonFilePath) { }
-
-        protected override string GenerateHtml()
+        if (this.logs is null)
         {
-            if (this.logs is null)
+            return "";
+        }
+
+        var startedRequest = this.logs
+            .GroupBy(x => new
             {
-                return "";
-            }
+                x.UserName,
+                x.RequestMethod,
+                x.Request,
+                x.RequestLabel,
+                x.StatusCode,
+                StartRequestTime = (long)(x.StartSendRequestTime / 10000000)
+            })
+            .Select(x => new HttpLogMessageByStartedRequest(
+                x.Key.UserName,
+                x.Key.RequestMethod,
+                x.Key.Request,
+                x.Key.RequestLabel,
+                x.Key.StatusCode,
+                x.Key.StartRequestTime,
+                x.LongCount()))
+            .ToList();
 
-            var startedRequest = this.logs
-                .GroupBy(x => new
-                {
-                    x.UserName,
-                    x.RequestMethod,
-                    x.Request,
-                    x.RequestLabel,
-                    x.StatusCode,
-                    StartRequestTime = (long)(x.StartSendRequestTime / 10000000)
-                })
-                .Select(x => new HttpLogMessageByStartedRequest(
-                    x.Key.UserName,
-                    x.Key.RequestMethod,
-                    x.Key.Request,
-                    x.Key.RequestLabel,
-                    x.Key.StatusCode,
-                    x.Key.StartRequestTime,
-                    x.LongCount()))
-                .ToList();
-
-            var completedRequest = this.logs
-                .GroupBy(x => new
-                {
-                    x.UserName,
-                    x.RequestMethod,
-                    x.Request,
-                    x.RequestLabel,
-                    x.StatusCode,
-                    EndResponseTime = (long)(x.EndResponseTime / 10000000)
-                })
-                .Select(x => new HttpLogMessageByCompletedRequest(
-                    x.Key.UserName,
-                    x.Key.RequestMethod,
-                    x.Key.Request,
-                    x.Key.RequestLabel,
-                    x.Key.StatusCode,
-                    x.Key.EndResponseTime,
-                    x.LongCount(),
-                    responseTime: x.Average(y => y.EndResponseTime - y.StartSendRequestTime), // response time
-                    sentTime: x.Average(y => y.StartWaitResponseTime - y.StartSendRequestTime), // sent time
-                    waitTime: x.Average(y => y.StartResponseTime - y.StartWaitResponseTime), // wait time
-                    receiveTime: x.Average(y => y.EndResponseTime - y.StartResponseTime), // receive time
-                    x.Sum(y => y.SendBytes),
-                    x.Sum(y => y.ReceiveBytes)))
-                .ToList();
-
-            // traffic
-            var totalTraffic = this.logs
-                .GroupBy(x => new { EndResponseTime = x.EndResponseTime / 10000000 })
-                .Select(x => new HttpLogMessageTotalTraffic(
-                    x.Key.EndResponseTime,
-                    x.Sum(y => y.SendBytes),
-                    x.Sum(y => y.ReceiveBytes)))
-                .ToList();
-
-            var userTraffic = this.logs
-                .GroupBy(x => new
-                {
-                    x.UserName,
-                    EndResponseTime = x.EndResponseTime / 10000000
-                }
-                ).Select(x => new HttpLogMessageUserTraffic(
-                    x.Key.UserName,
-                    x.Key.EndResponseTime,
-                    x.Sum(y => y.SendBytes),
-                    x.Sum(y => y.ReceiveBytes)))
-                .ToList();
-
-            var startedRequestTimeJsonString = new StringBuilder();
-            var completedRequestTimeJsonString = new StringBuilder();
-            var totalTrafficJsonStringLog = new StringBuilder();
-            var userTrafficJsonStringLog = new StringBuilder();
-
-            foreach (var item in completedRequest)
+        var completedRequest = this.logs
+            .GroupBy(x => new
             {
-                completedRequestTimeJsonString.Append(JsonSerializer.Serialize(item) + ",\n");
-            }
+                x.UserName,
+                x.RequestMethod,
+                x.Request,
+                x.RequestLabel,
+                x.StatusCode,
+                EndResponseTime = (long)(x.EndResponseTime / 10000000)
+            })
+            .Select(x => new HttpLogMessageByCompletedRequest(
+                x.Key.UserName,
+                x.Key.RequestMethod,
+                x.Key.Request,
+                x.Key.RequestLabel,
+                x.Key.StatusCode,
+                x.Key.EndResponseTime,
+                x.LongCount(),
+                responseTime: x.Average(y => y.EndResponseTime - y.StartSendRequestTime), // response time
+                sentTime: x.Average(y => y.StartWaitResponseTime - y.StartSendRequestTime), // sent time
+                waitTime: x.Average(y => y.StartResponseTime - y.StartWaitResponseTime), // wait time
+                receiveTime: x.Average(y => y.EndResponseTime - y.StartResponseTime), // receive time
+                x.Sum(y => y.SendBytes),
+                x.Sum(y => y.ReceiveBytes)))
+            .ToList();
 
-            foreach (var item in startedRequest)
+        // traffic
+        var totalTraffic = this.logs
+            .GroupBy(x => new { EndResponseTime = x.EndResponseTime / 10000000 })
+            .Select(x => new HttpLogMessageTotalTraffic(
+                x.Key.EndResponseTime,
+                x.Sum(y => y.SendBytes),
+                x.Sum(y => y.ReceiveBytes)))
+            .ToList();
+
+        var userTraffic = this.logs
+            .GroupBy(x => new
             {
-                startedRequestTimeJsonString.Append(JsonSerializer.Serialize(item) + ",\n");
+                x.UserName,
+                EndResponseTime = x.EndResponseTime / 10000000
             }
+            ).Select(x => new HttpLogMessageUserTraffic(
+                x.Key.UserName,
+                x.Key.EndResponseTime,
+                x.Sum(y => y.SendBytes),
+                x.Sum(y => y.ReceiveBytes)))
+            .ToList();
 
-            foreach (var item in totalTraffic)
-            {
-                totalTrafficJsonStringLog.Append(JsonSerializer.Serialize(item) + ",\n");
-            }
+        var startedRequestTimeJsonString = new StringBuilder();
+        var completedRequestTimeJsonString = new StringBuilder();
+        var totalTrafficJsonStringLog = new StringBuilder();
+        var userTrafficJsonStringLog = new StringBuilder();
 
-            foreach (var item in userTraffic)
-            {
-                userTrafficJsonStringLog.Append(JsonSerializer.Serialize(item) + ",\n");
-            }
+        foreach (var item in completedRequest)
+        {
+            completedRequestTimeJsonString.Append(JsonSerializer.Serialize(item) + ",\n");
+        }
 
-            //
-            string sourceData = @$"
+        foreach (var item in startedRequest)
+        {
+            startedRequestTimeJsonString.Append(JsonSerializer.Serialize(item) + ",\n");
+        }
+
+        foreach (var item in totalTraffic)
+        {
+            totalTrafficJsonStringLog.Append(JsonSerializer.Serialize(item) + ",\n");
+        }
+
+        foreach (var item in userTraffic)
+        {
+            userTrafficJsonStringLog.Append(JsonSerializer.Serialize(item) + ",\n");
+        }
+
+        //
+        string sourceData = @$"
 
 <script>
 const startedRequestRawLog = [{startedRequestTimeJsonString}]
@@ -122,7 +146,7 @@ const userTrafficLog = [{userTrafficJsonStringLog}]
 </script>
 ";
 
-            var plotlyJsLineDraw = @"
+        var plotlyJsLineDraw = @"
 <script>
 function PlotlyJsLineDraw(chartName, yaxisLabel, plotlyIdent, plotlyData, rawData=true) {
     let chartPlotData = []
@@ -196,7 +220,7 @@ function PlotlyJsLineDraw(chartName, yaxisLabel, plotlyIdent, plotlyData, rawDat
 </script>
 ";
 
-            var charts = @"
+        var charts = @"
 <script>
 
 /*
@@ -433,7 +457,7 @@ PlotlyJsLineDraw('Request Received Bytes Chart', 'Bytes', 'RequestReceivedBytesC
 </script>
 ";
 
-            var bodyStyle = @"
+        var bodyStyle = @"
 <style>
 body {
     background-color: #1A1A1A;
@@ -441,8 +465,8 @@ body {
 </style>
 ";
 
-            //
-            string htmlReport = $@"
+        //
+        string htmlReport = $@"
 <html>
 <head>
 <script src='https://cdn.plot.ly/plotly-2.3.0.min.js'></script>
@@ -468,7 +492,6 @@ body {
 </html>
 ";
 
-            return htmlReport;
-        }
+        return htmlReport;
     }
 }

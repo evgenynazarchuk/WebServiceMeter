@@ -1,37 +1,60 @@
-﻿using System.Collections.Generic;
+﻿/*
+ * MIT License
+ *
+ * Copyright (c) Evgeny Nazarchuk.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace WebServiceMeter.Interfaces
+namespace WebServiceMeter.Interfaces;
+
+public interface IHttpJsonTool : ITool
 {
-    public interface IHttpJsonTool : ITool
-    {
-        Task<ResponseObjectType?> RequestAsJsonAsync<ResponseObjectType, RequestObjectType>(
-            HttpMethod httpMethod,
-            string requestUri,
-            RequestObjectType requestObject,
-            Dictionary<string, string>? requestHeaders = null,
-            string userName = "",
-            string requestLabel = "")
-            where ResponseObjectType : class, new()
-            where RequestObjectType : class, new();
+    Task<ResponseObjectType?> RequestAsJsonAsync<ResponseObjectType, RequestObjectType>(
+        HttpMethod httpMethod,
+        string requestUri,
+        RequestObjectType requestObject,
+        Dictionary<string, string>? requestHeaders = null,
+        string userName = "",
+        string requestLabel = "")
+        where ResponseObjectType : class, new()
+        where RequestObjectType : class, new();
 
 
-        Task<string> RequestAsJsonAsync<RequestObjectType>(
-            HttpMethod httpMethod,
-            string requestUri,
-            RequestObjectType requestObject,
-            Dictionary<string, string>? requestHeaders = null,
-            string userName = "",
-            string requestLabel = "")
-            where RequestObjectType : class, new();
+    Task<string> RequestAsJsonAsync<RequestObjectType>(
+        HttpMethod httpMethod,
+        string requestUri,
+        RequestObjectType requestObject,
+        Dictionary<string, string>? requestHeaders = null,
+        string userName = "",
+        string requestLabel = "")
+        where RequestObjectType : class, new();
 
-        Task<ResponseObjectType?> RequestAsJsonAsync<ResponseObjectType>(
-            HttpMethod httpMethod,
-            string requestUri,
-            Dictionary<string, string>? requestHeaders = null,
-            string user = "",
-            string requestLabel = "")
-            where ResponseObjectType : class, new();
-    }
+    Task<ResponseObjectType?> RequestAsJsonAsync<ResponseObjectType>(
+        HttpMethod httpMethod,
+        string requestUri,
+        Dictionary<string, string>? requestHeaders = null,
+        string user = "",
+        string requestLabel = "")
+        where ResponseObjectType : class, new();
 }

@@ -1,70 +1,94 @@
-﻿using System.Linq;
+﻿/*
+ * MIT License
+ *
+ * Copyright (c) Evgeny Nazarchuk.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+using System.Linq;
 using System.Text;
 using System.Text.Json;
 
-namespace WebServiceMeter.Reports
+namespace WebServiceMeter.Reports;
+
+public class GrpcReportHtmlBuilder : HtmlBuilder<GrpcLogMessage>
 {
-    public class GrpcReportHtmlBuilder : HtmlBuilder<GrpcLogMessage>
+    public GrpcReportHtmlBuilder(string sourceJsonFilePath, string destinationJsonFilePath)
+        : base(sourceJsonFilePath, destinationJsonFilePath) { }
+
+    protected override string GenerateHtml()
     {
-        public GrpcReportHtmlBuilder(string sourceJsonFilePath, string destinationJsonFilePath)
-            : base(sourceJsonFilePath, destinationJsonFilePath) { }
-
-        protected override string GenerateHtml()
+        if (this.logs is null)
         {
-            if (this.logs is null)
+            return "";
+        }
+
+        var runningCallGrpcMethod = this.logs
+            .Where(x => x.Method != "receive" && x.Method != "send")
+            .GroupBy(x => new
             {
-                return "";
-            }
+                x.UserName,
+                x.Method,
+                x.Label,
+                StartRequestTime = (long)(x.StartTime / 10000000)
+            })
+            .Select(x => new GrpcLogByStartTime(
+                x.Key.UserName,
+                x.Key.Method,
+                x.Key.Label,
+                x.Key.StartRequestTime,
+                x.LongCount()))
+            .ToList();
 
-            var runningCallGrpcMethod = this.logs
-                .Where(x => x.Method != "receive" && x.Method != "send")
-                .GroupBy(x => new
-                {
-                    x.UserName,
-                    x.Method,
-                    x.Label,
-                    StartRequestTime = (long)(x.StartTime / 10000000)
-                })
-                .Select(x => new GrpcLogByStartTime(
-                    x.Key.UserName,
-                    x.Key.Method,
-                    x.Key.Label,
-                    x.Key.StartRequestTime,
-                    x.LongCount()))
-                .ToList();
-
-            var completedCallGrpcMethod = this.logs
-                .Where(x => x.Method != "receive" && x.Method != "send")
-                .GroupBy(x => new
-                {
-                    x.UserName,
-                    x.Method,
-                    x.Label,
-                    EndRequestTime = (long)(x.EndTime / 10000000)
-                })
-                .Select(x => new GrpcLogByEndTime(
-                    x.Key.UserName,
-                    x.Key.Method,
-                    x.Key.Label,
-                    x.Key.EndRequestTime,
-                    x.LongCount()))
-                .ToList();
-
-            var startedRequestTimeJsonString = new StringBuilder();
-            var completedRequestTimeJsonString = new StringBuilder();
-
-            foreach (var item in runningCallGrpcMethod)
+        var completedCallGrpcMethod = this.logs
+            .Where(x => x.Method != "receive" && x.Method != "send")
+            .GroupBy(x => new
             {
-                startedRequestTimeJsonString.Append(JsonSerializer.Serialize(item) + ",\n");
-            }
+                x.UserName,
+                x.Method,
+                x.Label,
+                EndRequestTime = (long)(x.EndTime / 10000000)
+            })
+            .Select(x => new GrpcLogByEndTime(
+                x.Key.UserName,
+                x.Key.Method,
+                x.Key.Label,
+                x.Key.EndRequestTime,
+                x.LongCount()))
+            .ToList();
 
-            foreach (var item in completedCallGrpcMethod)
-            {
-                completedRequestTimeJsonString.Append(JsonSerializer.Serialize(item) + ",\n");
-            }
+        var startedRequestTimeJsonString = new StringBuilder();
+        var completedRequestTimeJsonString = new StringBuilder();
 
-            //
-            string sourceData = @$"
+        foreach (var item in runningCallGrpcMethod)
+        {
+            startedRequestTimeJsonString.Append(JsonSerializer.Serialize(item) + ",\n");
+        }
+
+        foreach (var item in completedCallGrpcMethod)
+        {
+            completedRequestTimeJsonString.Append(JsonSerializer.Serialize(item) + ",\n");
+        }
+
+        //
+        string sourceData = @$"
 
 <script>
 const startedRequestRawLog = [{startedRequestTimeJsonString}]
@@ -72,7 +96,7 @@ const completedRequestRawLog = [{completedRequestTimeJsonString}]
 </script>
 ";
 
-            var plotlyJsLineDraw = @"
+        var plotlyJsLineDraw = @"
 <script>
 function PlotlyJsLineDraw(chartName, yaxisLabel, plotlyIdent, plotlyData, rawData=true) {
     let chartPlotData = []
@@ -146,7 +170,7 @@ function PlotlyJsLineDraw(chartName, yaxisLabel, plotlyIdent, plotlyData, rawDat
 </script>
 ";
 
-            var charts = @"
+        var charts = @"
 <script>
 
 /*
@@ -192,7 +216,7 @@ PlotlyJsLineDraw('Completed Requests', 'Count', 'CompletedRequestsChart', comple
 </script>
 ";
 
-            var bodyStyle = @"
+        var bodyStyle = @"
 <style>
 body {
     background-color: #1A1A1A;
@@ -200,8 +224,8 @@ body {
 </style>
 ";
 
-            //
-            string totalHtml = $@"
+        //
+        string totalHtml = $@"
 <html>
 <head>
 <script src='https://cdn.plot.ly/plotly-2.3.0.min.js'></script>
@@ -217,8 +241,7 @@ body {
 </html>
 ";
 
-            //
-            return totalHtml;
-        }
+        //
+        return totalHtml;
     }
 }

@@ -1,311 +1,335 @@
-﻿using System.Linq;
+﻿/*
+ * MIT License
+ *
+ * Copyright (c) Evgeny Nazarchuk.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+using System.Linq;
 using System.Text;
 using System.Text.Json;
 
-namespace WebServiceMeter.Reports
+namespace WebServiceMeter.Reports;
+
+public class WebSocketReportHtmlBuilder : HtmlBuilder<WebSocketLogMessage>
 {
-    public class WebSocketReportHtmlBuilder : HtmlBuilder<WebSocketLogMessage>
+    public WebSocketReportHtmlBuilder(string sourceJsonFilePath, string destinationHtmlFilePath)
+        : base(sourceJsonFilePath, destinationHtmlFilePath) { }
+
+    protected override string GenerateHtml()
     {
-        public WebSocketReportHtmlBuilder(string sourceJsonFilePath, string destinationHtmlFilePath)
-            : base(sourceJsonFilePath, destinationHtmlFilePath) { }
+        // connection report
+        var connectionStartTime = this.logs
+            .Where(x => x.ActionType == "connect")
+            .GroupBy(x => new
+            {
+                x.UserName,
+                x.ActionType,
+                x.Label,
+                StartRequestTime = (long)(x.StartTime / 10000000)
+            })
+            .Select(x => new WebSocketLogByStartTime(
+                x.Key.UserName,
+                x.Key.ActionType,
+                x.Key.Label,
+                x.Key.StartRequestTime,
+                x.LongCount()))
+            .ToList();
 
-        protected override string GenerateHtml()
+        var connectionEndTime = this.logs
+            .Where(x => x.ActionType == "connect")
+            .GroupBy(x => new
+            {
+                x.UserName,
+                x.ActionType,
+                x.Label,
+                EndRequestTime = (long)(x.EndTime / 10000000)
+            })
+            .Select(x => new WebSocketLogByEndTime(
+                x.Key.UserName,
+                x.Key.ActionType,
+                x.Key.Label,
+                x.Key.EndRequestTime,
+                x.LongCount()))
+            .ToList();
+
+        var connectionResponseTime = this.logs
+            .Where(x => x.ActionType == "connect")
+            .GroupBy(x => new
+            {
+                x.UserName,
+                x.ActionType,
+                x.Label,
+                EndRequestTime = x.EndTime / 10000000
+            })
+            .Select(x => new WebSocketLogByResponseTime(
+                x.Key.UserName,
+                x.Key.ActionType,
+                x.Key.Label,
+                x.Key.EndRequestTime,
+                (long)x.Average(y => y.EndTime - y.StartTime)
+            ))
+            .ToList();
+        // end
+
+        // sending report
+        var sendingStartTime = this.logs
+            .Where(x => x.ActionType == "send")
+            .GroupBy(x => new
+            {
+                x.UserName,
+                x.ActionType,
+                x.Label,
+                StartRequestTime = (long)(x.StartTime / 10000000)
+            })
+            .Select(x => new WebSocketLogByStartTime(
+                x.Key.UserName,
+                x.Key.ActionType,
+                x.Key.Label,
+                x.Key.StartRequestTime,
+                x.LongCount()))
+            .ToList();
+
+        var sendingEndTime = this.logs
+            .Where(x => x.ActionType == "send")
+            .GroupBy(x => new
+            {
+                x.UserName,
+                x.ActionType,
+                x.Label,
+                EndRequestTime = (long)(x.EndTime / 10000000)
+            })
+            .Select(x => new WebSocketLogByEndTime(
+                x.Key.UserName,
+                x.Key.ActionType,
+                x.Key.Label,
+                x.Key.EndRequestTime,
+                x.LongCount()))
+            .ToList();
+
+        var sendingResponseTime = this.logs
+            .Where(x => x.ActionType == "send")
+            .GroupBy(x => new
+            {
+                x.UserName,
+                x.ActionType,
+                x.Label,
+                EndRequestTime = x.EndTime / 10000000
+            })
+            .Select(x => new WebSocketLogByResponseTime(
+                x.Key.UserName,
+                x.Key.ActionType,
+                x.Key.Label,
+                x.Key.EndRequestTime,
+                (long)x.Average(y => y.EndTime - y.StartTime)
+            ))
+            .ToList();
+        // end
+
+        // receive report
+        var receivingStartTime = this.logs
+            .Where(x => x.ActionType == "receive")
+            .GroupBy(x => new
+            {
+                x.UserName,
+                x.ActionType,
+                x.Label,
+                StartRequestTime = (long)(x.StartTime / 10000000)
+            })
+            .Select(x => new WebSocketLogByStartTime(
+                x.Key.UserName,
+                x.Key.ActionType,
+                x.Key.Label,
+                x.Key.StartRequestTime,
+                x.LongCount()))
+            .ToList();
+
+        var receivingEndTime = this.logs
+            .Where(x => x.ActionType == "receive")
+            .GroupBy(x => new
+            {
+                x.UserName,
+                x.ActionType,
+                x.Label,
+                EndRequestTime = (long)(x.EndTime / 10000000)
+            })
+            .Select(x => new WebSocketLogByEndTime(
+                x.Key.UserName,
+                x.Key.ActionType,
+                x.Key.Label,
+                x.Key.EndRequestTime,
+                x.LongCount()))
+            .ToList();
+
+        var receivingResponseTime = this.logs
+            .Where(x => x.ActionType == "receive")
+            .GroupBy(x => new
+            {
+                x.UserName,
+                x.ActionType,
+                x.Label,
+                EndRequestTime = x.EndTime / 10000000
+            })
+            .Select(x => new WebSocketLogByResponseTime(
+                x.Key.UserName,
+                x.Key.ActionType,
+                x.Key.Label,
+                x.Key.EndRequestTime,
+                (long)x.Average(y => y.EndTime - y.StartTime)
+            ))
+            .ToList();
+        // end
+
+        // connection report
+        var disconnectionStartTime = this.logs
+            .Where(x => x.ActionType == "disconnect")
+            .GroupBy(x => new
+            {
+                x.UserName,
+                x.ActionType,
+                x.Label,
+                StartRequestTime = (long)(x.StartTime / 10000000)
+            })
+            .Select(x => new WebSocketLogByStartTime(
+                x.Key.UserName,
+                x.Key.ActionType,
+                x.Key.Label,
+                x.Key.StartRequestTime,
+                x.LongCount()))
+            .ToList();
+
+        var disconnectionEndTime = this.logs
+            .Where(x => x.ActionType == "disconnect")
+            .GroupBy(x => new
+            {
+                x.UserName,
+                x.ActionType,
+                x.Label,
+                EndRequestTime = (long)(x.EndTime / 10000000)
+            })
+            .Select(x => new WebSocketLogByEndTime(
+                x.Key.UserName,
+                x.Key.ActionType,
+                x.Key.Label,
+                x.Key.EndRequestTime,
+                x.LongCount()))
+            .ToList();
+
+        var disconnectionResponseTime = this.logs
+            .Where(x => x.ActionType == "disconnect")
+            .GroupBy(x => new
+            {
+                x.UserName,
+                x.ActionType,
+                x.Label,
+                EndRequestTime = x.EndTime / 10000000
+            })
+            .Select(x => new WebSocketLogByResponseTime(
+                x.Key.UserName,
+                x.Key.ActionType,
+                x.Key.Label,
+                x.Key.EndRequestTime,
+                (long)x.Average(y => y.EndTime - y.StartTime)
+            ))
+            .ToList();
+        // end
+
+        // connection json report
+        StringBuilder connectionStartTimeJsonString = new();
+        StringBuilder connectionEndTimeJsonString = new();
+        StringBuilder connectionResponseTimeJsonString = new();
+
+        foreach (var item in connectionStartTime)
         {
-            // connection report
-            var connectionStartTime = this.logs
-                .Where(x => x.ActionType == "connect")
-                .GroupBy(x => new
-                {
-                    x.UserName,
-                    x.ActionType,
-                    x.Label,
-                    StartRequestTime = (long)(x.StartTime / 10000000)
-                })
-                .Select(x => new WebSocketLogByStartTime(
-                    x.Key.UserName,
-                    x.Key.ActionType,
-                    x.Key.Label,
-                    x.Key.StartRequestTime,
-                    x.LongCount()))
-                .ToList();
+            connectionStartTimeJsonString.Append(JsonSerializer.Serialize(item) + ",\n");
+        }
+        foreach (var item in connectionEndTime)
+        {
+            connectionEndTimeJsonString.Append(JsonSerializer.Serialize(item) + ",\n");
+        }
+        foreach (var item in connectionResponseTime)
+        {
+            connectionResponseTimeJsonString.Append(JsonSerializer.Serialize(item) + ",\n");
+        }
 
-            var connectionEndTime = this.logs
-                .Where(x => x.ActionType == "connect")
-                .GroupBy(x => new
-                {
-                    x.UserName,
-                    x.ActionType,
-                    x.Label,
-                    EndRequestTime = (long)(x.EndTime / 10000000)
-                })
-                .Select(x => new WebSocketLogByEndTime(
-                    x.Key.UserName,
-                    x.Key.ActionType,
-                    x.Key.Label,
-                    x.Key.EndRequestTime,
-                    x.LongCount()))
-                .ToList();
+        // sending json report
+        StringBuilder sendingStartTimeJsonString = new();
+        StringBuilder sendingEndTimeJsonString = new();
+        StringBuilder sendingResponseTimeJsonString = new();
 
-            var connectionResponseTime = this.logs
-                .Where(x => x.ActionType == "connect")
-                .GroupBy(x => new
-                {
-                    x.UserName,
-                    x.ActionType,
-                    x.Label,
-                    EndRequestTime = x.EndTime / 10000000
-                })
-                .Select(x => new WebSocketLogByResponseTime(
-                    x.Key.UserName,
-                    x.Key.ActionType,
-                    x.Key.Label,
-                    x.Key.EndRequestTime,
-                    (long)x.Average(y => y.EndTime - y.StartTime)
-                ))
-                .ToList();
-            // end
+        foreach (var item in sendingStartTime)
+        {
+            sendingStartTimeJsonString.Append(JsonSerializer.Serialize(item) + ",\n");
+        }
+        foreach (var item in sendingEndTime)
+        {
+            sendingEndTimeJsonString.Append(JsonSerializer.Serialize(item) + ",\n");
+        }
+        foreach (var item in sendingResponseTime)
+        {
+            sendingResponseTimeJsonString.Append(JsonSerializer.Serialize(item) + ",\n");
+        }
 
-            // sending report
-            var sendingStartTime = this.logs
-                .Where(x => x.ActionType == "send")
-                .GroupBy(x => new
-                {
-                    x.UserName,
-                    x.ActionType,
-                    x.Label,
-                    StartRequestTime = (long)(x.StartTime / 10000000)
-                })
-                .Select(x => new WebSocketLogByStartTime(
-                    x.Key.UserName,
-                    x.Key.ActionType,
-                    x.Key.Label,
-                    x.Key.StartRequestTime,
-                    x.LongCount()))
-                .ToList();
+        // receiving json report
+        StringBuilder receivingStartTimeJsonString = new();
+        StringBuilder receivingEndTimeJsonString = new();
+        StringBuilder receivingResponseTimeJsonString = new();
 
-            var sendingEndTime = this.logs
-                .Where(x => x.ActionType == "send")
-                .GroupBy(x => new
-                {
-                    x.UserName,
-                    x.ActionType,
-                    x.Label,
-                    EndRequestTime = (long)(x.EndTime / 10000000)
-                })
-                .Select(x => new WebSocketLogByEndTime(
-                    x.Key.UserName,
-                    x.Key.ActionType,
-                    x.Key.Label,
-                    x.Key.EndRequestTime,
-                    x.LongCount()))
-                .ToList();
+        foreach (var item in receivingStartTime)
+        {
+            receivingStartTimeJsonString.Append(JsonSerializer.Serialize(item) + ",\n");
+        }
+        foreach (var item in receivingEndTime)
+        {
+            receivingEndTimeJsonString.Append(JsonSerializer.Serialize(item) + ",\n");
+        }
+        foreach (var item in receivingResponseTime)
+        {
+            receivingResponseTimeJsonString.Append(JsonSerializer.Serialize(item) + ",\n");
+        }
 
-            var sendingResponseTime = this.logs
-                .Where(x => x.ActionType == "send")
-                .GroupBy(x => new
-                {
-                    x.UserName,
-                    x.ActionType,
-                    x.Label,
-                    EndRequestTime = x.EndTime / 10000000
-                })
-                .Select(x => new WebSocketLogByResponseTime(
-                    x.Key.UserName,
-                    x.Key.ActionType,
-                    x.Key.Label,
-                    x.Key.EndRequestTime,
-                    (long)x.Average(y => y.EndTime - y.StartTime)
-                ))
-                .ToList();
-            // end
+        // disconnection json report
+        StringBuilder disconnectionStartTimeJsonString = new();
+        StringBuilder disconnectionEndTimeJsonString = new();
+        StringBuilder disconnectionResponseTimeJsonString = new();
 
-            // receive report
-            var receivingStartTime = this.logs
-                .Where(x => x.ActionType == "receive")
-                .GroupBy(x => new
-                {
-                    x.UserName,
-                    x.ActionType,
-                    x.Label,
-                    StartRequestTime = (long)(x.StartTime / 10000000)
-                })
-                .Select(x => new WebSocketLogByStartTime(
-                    x.Key.UserName,
-                    x.Key.ActionType,
-                    x.Key.Label,
-                    x.Key.StartRequestTime,
-                    x.LongCount()))
-                .ToList();
-
-            var receivingEndTime = this.logs
-                .Where(x => x.ActionType == "receive")
-                .GroupBy(x => new
-                {
-                    x.UserName,
-                    x.ActionType,
-                    x.Label,
-                    EndRequestTime = (long)(x.EndTime / 10000000)
-                })
-                .Select(x => new WebSocketLogByEndTime(
-                    x.Key.UserName,
-                    x.Key.ActionType,
-                    x.Key.Label,
-                    x.Key.EndRequestTime,
-                    x.LongCount()))
-                .ToList();
-
-            var receivingResponseTime = this.logs
-                .Where(x => x.ActionType == "receive")
-                .GroupBy(x => new
-                {
-                    x.UserName,
-                    x.ActionType,
-                    x.Label,
-                    EndRequestTime = x.EndTime / 10000000
-                })
-                .Select(x => new WebSocketLogByResponseTime(
-                    x.Key.UserName,
-                    x.Key.ActionType,
-                    x.Key.Label,
-                    x.Key.EndRequestTime,
-                    (long)x.Average(y => y.EndTime - y.StartTime)
-                ))
-                .ToList();
-            // end
-
-            // connection report
-            var disconnectionStartTime = this.logs
-                .Where(x => x.ActionType == "disconnect")
-                .GroupBy(x => new
-                {
-                    x.UserName,
-                    x.ActionType,
-                    x.Label,
-                    StartRequestTime = (long)(x.StartTime / 10000000)
-                })
-                .Select(x => new WebSocketLogByStartTime(
-                    x.Key.UserName,
-                    x.Key.ActionType,
-                    x.Key.Label,
-                    x.Key.StartRequestTime,
-                    x.LongCount()))
-                .ToList();
-
-            var disconnectionEndTime = this.logs
-                .Where(x => x.ActionType == "disconnect")
-                .GroupBy(x => new
-                {
-                    x.UserName,
-                    x.ActionType,
-                    x.Label,
-                    EndRequestTime = (long)(x.EndTime / 10000000)
-                })
-                .Select(x => new WebSocketLogByEndTime(
-                    x.Key.UserName,
-                    x.Key.ActionType,
-                    x.Key.Label,
-                    x.Key.EndRequestTime,
-                    x.LongCount()))
-                .ToList();
-
-            var disconnectionResponseTime = this.logs
-                .Where(x => x.ActionType == "disconnect")
-                .GroupBy(x => new
-                {
-                    x.UserName,
-                    x.ActionType,
-                    x.Label,
-                    EndRequestTime = x.EndTime / 10000000
-                })
-                .Select(x => new WebSocketLogByResponseTime(
-                    x.Key.UserName,
-                    x.Key.ActionType,
-                    x.Key.Label,
-                    x.Key.EndRequestTime,
-                    (long)x.Average(y => y.EndTime - y.StartTime)
-                ))
-                .ToList();
-            // end
-
-            // connection json report
-            StringBuilder connectionStartTimeJsonString = new();
-            StringBuilder connectionEndTimeJsonString = new();
-            StringBuilder connectionResponseTimeJsonString = new();
-
-            foreach (var item in connectionStartTime)
-            {
-                connectionStartTimeJsonString.Append(JsonSerializer.Serialize(item) + ",\n");
-            }
-            foreach (var item in connectionEndTime)
-            {
-                connectionEndTimeJsonString.Append(JsonSerializer.Serialize(item) + ",\n");
-            }
-            foreach (var item in connectionResponseTime)
-            {
-                connectionResponseTimeJsonString.Append(JsonSerializer.Serialize(item) + ",\n");
-            }
-
-            // sending json report
-            StringBuilder sendingStartTimeJsonString = new();
-            StringBuilder sendingEndTimeJsonString = new();
-            StringBuilder sendingResponseTimeJsonString = new();
-
-            foreach (var item in sendingStartTime)
-            {
-                sendingStartTimeJsonString.Append(JsonSerializer.Serialize(item) + ",\n");
-            }
-            foreach (var item in sendingEndTime)
-            {
-                sendingEndTimeJsonString.Append(JsonSerializer.Serialize(item) + ",\n");
-            }
-            foreach (var item in sendingResponseTime)
-            {
-                sendingResponseTimeJsonString.Append(JsonSerializer.Serialize(item) + ",\n");
-            }
-
-            // receiving json report
-            StringBuilder receivingStartTimeJsonString = new();
-            StringBuilder receivingEndTimeJsonString = new();
-            StringBuilder receivingResponseTimeJsonString = new();
-
-            foreach (var item in receivingStartTime)
-            {
-                receivingStartTimeJsonString.Append(JsonSerializer.Serialize(item) + ",\n");
-            }
-            foreach (var item in receivingEndTime)
-            {
-                receivingEndTimeJsonString.Append(JsonSerializer.Serialize(item) + ",\n");
-            }
-            foreach (var item in receivingResponseTime)
-            {
-                receivingResponseTimeJsonString.Append(JsonSerializer.Serialize(item) + ",\n");
-            }
-
-            // disconnection json report
-            StringBuilder disconnectionStartTimeJsonString = new();
-            StringBuilder disconnectionEndTimeJsonString = new();
-            StringBuilder disconnectionResponseTimeJsonString = new();
-
-            foreach (var item in disconnectionStartTime)
-            {
-                disconnectionStartTimeJsonString.Append(JsonSerializer.Serialize(item) + ",\n");
-            }
-            foreach (var item in disconnectionEndTime)
-            {
-                disconnectionEndTimeJsonString.Append(JsonSerializer.Serialize(item) + ",\n");
-            }
-            foreach (var item in disconnectionResponseTime)
-            {
-                disconnectionResponseTimeJsonString.Append(JsonSerializer.Serialize(item) + ",\n");
-            }
+        foreach (var item in disconnectionStartTime)
+        {
+            disconnectionStartTimeJsonString.Append(JsonSerializer.Serialize(item) + ",\n");
+        }
+        foreach (var item in disconnectionEndTime)
+        {
+            disconnectionEndTimeJsonString.Append(JsonSerializer.Serialize(item) + ",\n");
+        }
+        foreach (var item in disconnectionResponseTime)
+        {
+            disconnectionResponseTimeJsonString.Append(JsonSerializer.Serialize(item) + ",\n");
+        }
 
 
-            //
-            //
-            //
+        //
+        //
+        //
 
-            //
-            string sourceData = @$"
+        //
+        string sourceData = @$"
 
 <script>
 
@@ -328,7 +352,7 @@ const groupedDisconnectionResponseTime = [{disconnectionResponseTimeJsonString}]
 </script>
 ";
 
-            var plotlyJsLineDraw = @"
+        var plotlyJsLineDraw = @"
 <script>
 function PlotlyJsLineDraw(chartName, yaxisLabel, plotlyIdent, plotlyData, rawData=true) {
     let chartPlotData = []
@@ -402,7 +426,7 @@ function PlotlyJsLineDraw(chartName, yaxisLabel, plotlyIdent, plotlyData, rawDat
 </script>
 ";
 
-            var charts = @"
+        var charts = @"
 <script>
 
 /*
@@ -665,7 +689,7 @@ PlotlyJsLineDraw('Response time disconnection requests', 'Milliseconds', 'Respon
 </script>
 ";
 
-            var bodyStyle = @"
+        var bodyStyle = @"
 <style>
 body {
     background-color: #1A1A1A;
@@ -673,8 +697,8 @@ body {
 </style>
 ";
 
-            //
-            string totalHtml = $@"
+        //
+        string totalHtml = $@"
 <html>
 <head>
 <script src='https://cdn.plot.ly/plotly-2.3.0.min.js'></script>
@@ -706,8 +730,7 @@ body {
 </body>
 </html>
 ";
-            //
-            return totalHtml;
-        }
+        //
+        return totalHtml;
     }
 }

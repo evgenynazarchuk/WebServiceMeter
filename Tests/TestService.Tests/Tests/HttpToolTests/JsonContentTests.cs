@@ -5,25 +5,24 @@ using FluentAssertions;
 using WebServiceMeter;
 using TestService.Models;
 
-namespace TestService.Tests
+namespace TestService.Tests;
+
+[TestClass]
+public class JsonContentTests
 {
-    [TestClass]
-    public class JsonContentTests
+    [TestMethod]
+    public async Task GetDefaultObjectTest()
     {
-        [TestMethod]
-        public async Task GetDefaultObjectTest()
-        {
-            // Arrange
-            var app = new WebApplicationFactory<Startup>();
-            var client = app.CreateClient();
-            var httpTool = new HttpTool(client);
+        // Arrange
+        var app = new WebApplicationFactory<Startup>();
+        var client = app.CreateClient();
+        var httpTool = new HttpTool(client);
 
-            // Act
-            var person = await httpTool.GetAsJsonAsync<Person>(path: "Test/GetDefaultObject");
+        // Act
+        var person = await httpTool.GetAsJsonAsync<Person>(path: "Test/GetDefaultObject");
 
-            // Assert
-            person.Id.Should().Be(-1);
-            person.Name.Should().Be("TestName");
-        }
+        // Assert
+        person.Id.Should().Be(-1);
+        person.Name.Should().Be("TestName");
     }
 }
