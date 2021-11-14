@@ -22,13 +22,18 @@
  * SOFTWARE.
  */
 
-using System;
+using System.Reflection;
+using System.Threading.Tasks;
+using WebServiceMeter;
 
-namespace TestService.Models;
-
-public class Person
+namespace GrpcWebApplication.PerformanceTests
 {
-    public int Id { get; set; }
-
-    public string Name { get; set; }
+    internal class Program
+    {
+        static async Task Main(string[] args)
+        {
+            var runner = new TestRunner(args, Assembly.GetExecutingAssembly());
+            await runner.StartAsync();
+        }
+    }
 }

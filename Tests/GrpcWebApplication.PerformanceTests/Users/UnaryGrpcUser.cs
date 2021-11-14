@@ -22,8 +22,18 @@
  * SOFTWARE.
  */
 
-using System;
+using System.Threading.Tasks;
+using WebServiceMeter;
 
-namespace WebServiceMeter;
+namespace GrpcWebApplication.PerformanceTests.Users;
 
-public class PerformanceClassAttribute : Attribute { }
+public class UnaryGrpcUser : GrpcUser
+{
+    public UnaryGrpcUser(string address, string? userName = null)
+        : base(address, typeof(UserMessagerService.UserMessagerServiceClient), userName) { }
+
+    protected override async Task PerformanceAsync()
+    {
+        await UnaryCall<MessageIdentityDto, MessageCreateDto>("SendMessageAsync", new MessageCreateDto { Text = "Hello world" });
+    }
+}

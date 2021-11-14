@@ -22,13 +22,44 @@
  * SOFTWARE.
  */
 
-using System;
+using GrpcWebApplication.Services;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
-namespace TestService.Models;
+namespace GrpcWebApplication;
 
-public class Person
+public class Startup
 {
-    public int Id { get; set; }
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddTransient<DataContext>();
 
-    public string Name { get; set; }
+        using var db = new DataContext();
+        db.Database.EnsureCreated();
+
+        services.AddGrpc();
+    }
+
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        if (env.IsDevelopment())
+        {
+            app.UseDeveloperExceptionPage();
+        }
+
+        app.UseRouting();
+
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapGrpcService<UserMessagerHandler>();
+
+            endpoints.MapGet("/", async context =>
+            {
+                await context.Response.WriteAsync("Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
+            });
+        });
+    }
 }

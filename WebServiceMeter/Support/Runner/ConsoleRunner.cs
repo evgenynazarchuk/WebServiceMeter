@@ -43,7 +43,7 @@ public class ConsoleRunner
 
         var assemblyTypes = assembly.GetTypes()
             .Where(x => x.GetCustomAttributes()
-            .Any(x => x is PerformanceClassAttribute))
+            .Any(x => x is PerformanceTestClassAttribute))
             .ToList();
 
         int testNumber = 1;

@@ -22,13 +22,13 @@
  * SOFTWARE.
  */
 
-using System;
+using Microsoft.AspNetCore.Mvc.Testing;
 
-namespace TestService.Models;
+namespace GrpcWebApplication.IntegrationTest.Support;
 
-public class Person
+public class TestApplication : WebApplicationFactory<Startup>
 {
-    public int Id { get; set; }
-
-    public string Name { get; set; }
+    public TestApplication()
+    {
+    }
 }

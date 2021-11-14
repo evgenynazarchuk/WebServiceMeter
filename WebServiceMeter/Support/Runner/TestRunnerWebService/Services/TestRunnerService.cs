@@ -39,7 +39,7 @@ public class TestRunnerService
 
         var testAssemblyTypes = assembly.GetTypes()
             .Where(x => x.GetCustomAttributes()
-            .Any(x => x is PerformanceClassAttribute))
+            .Any(x => x is PerformanceTestClassAttribute))
             .ToList();
 
         foreach (var assemblyType in testAssemblyTypes)

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * MIT License
  *
  * Copyright (c) Evgeny Nazarchuk.
@@ -22,30 +22,36 @@
  * SOFTWARE.
  */
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.AspNetCore.Mvc.Testing;
+using Google.Protobuf.WellKnownTypes;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using FluentAssertions;
 using WebServiceMeter;
 
-namespace TestService.Tests;
+namespace GrpcWebApplication.PerformanceTests.Users;
 
-[TestClass]
-public class ContentTests
+public class ClientStreamUser : GrpcUser
 {
-    [TestMethod]
-    public async Task GetDefaultStringContentTest()
+    public ClientStreamUser(string address, string? userName = null)
+        : base(address, typeof(UserMessagerService.UserMessagerServiceClient), userName)
     {
-        // Arrange
-        var app = new WebApplicationFactory<Startup>();
-        var client = app.CreateClient();
-        var httpTool = new HttpTool(client);
+        UseGrpcClient(typeof(UserMessagerService.UserMessagerServiceClient));
+    }
 
-        // Act
-        var httpResult = await httpTool.GetAsync(path: "Test/GetDefaultString");
+    protected override async Task PerformanceAsync()
+    {
+        var messages = new List<MessageCreateDto>
+            {
+                new MessageCreateDto { Text = "test 1" },
+                new MessageCreateDto { Text = "test 2" },
+                new MessageCreateDto { Text = "test 3" },
+                new MessageCreateDto { Text = "test 4" },
+                new MessageCreateDto { Text = "test 5" },
+                new MessageCreateDto { Text = "test 6" },
+                new MessageCreateDto { Text = "test 7" },
+                new MessageCreateDto { Text = "test 8" },
+                new MessageCreateDto { Text = "test 9" },
+            };
 
-        // Assert
-        httpResult.StatusCode.Should().Be(200);
-        httpResult.ContentAsUTF8.Should().Be("Hello world");
+        await ClientStream<Empty, MessageCreateDto>("SendMessages", messages);
     }
 }

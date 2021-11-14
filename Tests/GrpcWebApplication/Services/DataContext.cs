@@ -22,13 +22,25 @@
  * SOFTWARE.
  */
 
-using System;
+using GrpcWebApplication.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace TestService.Models;
+namespace GrpcWebApplication.Services;
 
-public class Person
+public class DataContext : DbContext
 {
-    public int Id { get; set; }
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseInMemoryDatabase("db");
+        //optionsBuilder.UseSqlite("Data source=data.db");
+        //optionsBuilder.UseSqlServer("Data Source=localhost;Initial Catalog=Test;Integrated Security=True");
+    }
 
-    public string Name { get; set; }
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Message>().HasKey(e => e.Id);
+        modelBuilder.Entity<Message>().Property(e => e.Id).ValueGeneratedOnAdd();
+    }
+
+    public DbSet<Message> Messages { get; set; }
 }

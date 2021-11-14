@@ -1,4 +1,4 @@
-/*
+﻿/*
  * MIT License
  *
  * Copyright (c) Evgeny Nazarchuk.
@@ -22,30 +22,47 @@
  * SOFTWARE.
  */
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.AspNetCore.Mvc.Testing;
+using GrpcWebApplication.PerformanceTests.Users;
 using System.Threading.Tasks;
-using FluentAssertions;
 using WebServiceMeter;
 
-namespace TestService.Tests;
+namespace GrpcWebApplication.PerformanceTests.Tests;
 
-[TestClass]
-public class ContentTests
+[PerformanceTestClass]
+public class Demo1
 {
-    [TestMethod]
-    public async Task GetDefaultStringContentTest()
+    private const string ADDRESS = "https://localhost:5001";
+
+    [PerformanceTest(10, 120)]
+    public async Task UnaryCallByActiveUsersTest(int activeUsers, int seconds)
     {
-        // Arrange
-        var app = new WebApplicationFactory<Startup>();
-        var client = app.CreateClient();
-        var httpTool = new HttpTool(client);
+        var user = new UnaryGrpcUser(ADDRESS);
+        var plan = new ActiveUsersOnPeriod(user, activeUsers, seconds.Seconds());
 
-        // Act
-        var httpResult = await httpTool.GetAsync(path: "Test/GetDefaultString");
+        await new Scenario()
+            .AddSequentialPlans(plan)
+            .Start();
+    }
 
-        // Assert
-        httpResult.StatusCode.Should().Be(200);
-        httpResult.ContentAsUTF8.Should().Be("Hello world");
+    [PerformanceTest(500, 20 * 60)]
+    public async Task UnaryCallByUsersPerPeriodTest(int users, int seconds)
+    {
+        var user = new UnaryGrpcUser(ADDRESS);
+        var plan = new UsersPerPeriod(user, users, seconds.Seconds());
+
+        await new Scenario()
+            .AddSequentialPlans(plan)
+            .Start();
+    }
+
+    [PerformanceTest(5, 60)]
+    public async Task ClientStreamTest(int users, int seconds)
+    {
+        var user = new ClientStreamUser(ADDRESS);
+        var plan = new ActiveUsersOnPeriod(user, users, seconds.Seconds());
+
+        await new Scenario()
+            .AddSequentialPlans(plan)
+            .Start();
     }
 }

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * MIT License
  *
  * Copyright (c) Evgeny Nazarchuk.
@@ -22,13 +22,23 @@
  * SOFTWARE.
  */
 
-using System;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
-namespace TestService.Models;
-
-public class Person
+namespace GrpcWebApplication
 {
-    public int Id { get; set; }
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            CreateHostBuilder(args).Build().Run();
+        }
 
-    public string Name { get; set; }
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                });
+    }
 }
