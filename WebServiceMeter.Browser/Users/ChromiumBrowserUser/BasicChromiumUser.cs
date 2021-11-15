@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-using System;
-
 namespace WebServiceMeter.Users;
 
 public abstract class BasicChromiumUser : BasicUser, IDisposable

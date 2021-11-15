@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-using System;
-using System.Threading.Tasks;
 using WebServiceMeter.Interfaces;
 using WebServiceMeter.Reports;
 using WebServiceMeter.Tools;

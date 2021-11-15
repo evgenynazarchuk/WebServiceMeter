@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-using System.Threading.Tasks;
 using WebServiceMeter.Interfaces;
 using WebServiceMeter.Users;
 

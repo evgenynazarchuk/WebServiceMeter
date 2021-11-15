@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-using System.Collections.Generic;
-
 namespace WebServiceMeter.Runner;
 
 public class TestMethodSimpleDto : TestMethodIdentityDto

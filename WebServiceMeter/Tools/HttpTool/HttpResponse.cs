@@ -23,7 +23,6 @@
  */
 
 using System.Text;
-using System.Net.Http.Headers;
 
 namespace WebServiceMeter;
 

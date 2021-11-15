@@ -22,14 +22,13 @@
  * SOFTWARE.
  */
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using RestWebApplication.Services;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using RestWebApplication.Models;
-using Microsoft.AspNetCore.Http;
+using RestWebApplication.Services;
 using System.IO;
-using System.Linq;
+using System.Threading.Tasks;
 
 namespace RestWebApplication.Controllers;
 

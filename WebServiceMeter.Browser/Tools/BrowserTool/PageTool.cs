@@ -23,7 +23,6 @@
  */
 
 using Microsoft.Playwright;
-using System.Threading.Tasks;
 using WebServiceMeter.Reports;
 using WebServiceMeter.Support;
 

@@ -27,9 +27,8 @@ using System.Collections.Concurrent;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using WebServiceMeter;
-using WebServiceMeter.Interfaces;
 using WebServiceMeter.DataReader;
+using WebServiceMeter.Interfaces;
 
 namespace WebServiceMeter.Reports;
 

@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-using System;
-
 namespace WebServiceMeter;
 
 public class PerformanceTestClassAttribute : Attribute { }

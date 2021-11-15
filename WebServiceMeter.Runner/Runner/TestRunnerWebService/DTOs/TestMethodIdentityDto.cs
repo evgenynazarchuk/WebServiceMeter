@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-using System;
-
 namespace WebServiceMeter.Runner;
 
 public class TestMethodIdentityDto

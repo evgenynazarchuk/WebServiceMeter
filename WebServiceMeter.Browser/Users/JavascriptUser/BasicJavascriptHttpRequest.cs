@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-using System.Threading.Tasks;
-
 namespace WebServiceMeter.Users;
 
 public abstract partial class BasicJavascriptUser : BasicUser

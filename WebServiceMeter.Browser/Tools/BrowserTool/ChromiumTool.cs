@@ -23,9 +23,6 @@
  */
 
 using Microsoft.Playwright;
-using System;
-using System.Threading.Tasks;
-using WebServiceMeter.Reports;
 using WebServiceMeter.Tools;
 
 namespace WebServiceMeter;

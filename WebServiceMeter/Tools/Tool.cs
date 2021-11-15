@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-using WebServiceMeter.Reports;
-
 namespace WebServiceMeter.Tools;
 
 public class Tool

@@ -23,7 +23,6 @@
  */
 
 using WebServiceMeter.Interfaces;
-using WebServiceMeter.Reports;
 
 namespace WebServiceMeter.Users;
 

@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.AspNetCore.Mvc.Testing;
-using System.Threading.Tasks;
 using FluentAssertions;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Threading.Tasks;
 using WebServiceMeter;
 
 namespace RestWebApplication.Tests;

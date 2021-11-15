@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-using System;
-using WebServiceMeter;
 using WebServiceMeter.DataReader;
 
 namespace WebServiceMeter.Reports;

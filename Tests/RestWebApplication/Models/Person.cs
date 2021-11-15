@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-using System;
-
 namespace RestWebApplication.Models;
 
 public class Person
