@@ -1,4 +1,4 @@
-﻿/*
+/*
  * MIT License
  *
  * Copyright (c) Evgeny Nazarchuk.
@@ -22,37 +22,28 @@
  * SOFTWARE.
  */
 
-namespace WebServiceMeter.Users;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-public abstract partial class BasicWebSocketUser : BasicUser
+namespace RestWebApplication;
+
+public class Program
 {
-    public BasicWebSocketUser(
-        string host,
-        int port,
-        string path,
-        string? userName = null)
-        : base(userName ?? typeof(BasicWebSocketUser).Name)
+    public static void Main(string[] args)
     {
-        this.host = host;
-        this.port = port;
-        this.path = path;
+        CreateHostBuilder(args).Build().Run();
     }
 
-    public void SetClientBuffer(
-        int receiveBufferSize = 1024,
-        int sendBufferSize = 1024)
-    {
-        this.sendBufferSize = sendBufferSize;
-        this.receiveBufferSize = receiveBufferSize;
-    }
-
-    protected readonly string host;
-
-    protected readonly int port;
-
-    protected readonly string path;
-
-    protected int receiveBufferSize = 1024;
-
-    protected int sendBufferSize = 1024;
+    public static IHostBuilder CreateHostBuilder(string[] args) =>
+        Host.CreateDefaultBuilder(args)
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.UseStartup<Startup>();
+            });
 }

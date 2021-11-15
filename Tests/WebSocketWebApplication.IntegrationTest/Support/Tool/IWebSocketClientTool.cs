@@ -22,37 +22,27 @@
  * SOFTWARE.
  */
 
-namespace WebServiceMeter.Users;
+using System;
+using System.Net.WebSockets;
+using System.Threading.Tasks;
 
-public abstract partial class BasicWebSocketUser : BasicUser
+namespace WebSocketWebApplication.IntegrationTest.Support.Tool;
+
+public interface IWebSocketClientTool
 {
-    public BasicWebSocketUser(
-        string host,
-        int port,
-        string path,
-        string? userName = null)
-        : base(userName ?? typeof(BasicWebSocketUser).Name)
-    {
-        this.host = host;
-        this.port = port;
-        this.path = path;
-    }
+    Task ConnectAsync();
 
-    public void SetClientBuffer(
-        int receiveBufferSize = 1024,
-        int sendBufferSize = 1024)
-    {
-        this.sendBufferSize = sendBufferSize;
-        this.receiveBufferSize = receiveBufferSize;
-    }
+    ValueTask DisconnectAsync();
 
-    protected readonly string host;
+    ValueTask SendMessageAsync(string message);
 
-    protected readonly int port;
+    ValueTask<string> ReceiveMessageAsync();
 
-    protected readonly string path;
+    ValueTask<ValueWebSocketReceiveResult> ReceiveBytesAsync(Memory<byte> buffer);
 
-    protected int receiveBufferSize = 1024;
+    ValueTask<(Memory<byte> buffer, ValueWebSocketReceiveResult bufferInfo)> ReceiveBytesAsync();
 
-    protected int sendBufferSize = 1024;
+    ValueTask SendAsync(ReadOnlyMemory<byte> buffer, WebSocketMessageType messageType, bool endOfMessage = true);
+
+    ValueTask SendBytesAsync(ReadOnlyMemory<byte> buffer);
 }

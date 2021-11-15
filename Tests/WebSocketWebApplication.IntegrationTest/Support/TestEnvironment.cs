@@ -22,37 +22,14 @@
  * SOFTWARE.
  */
 
-namespace WebServiceMeter.Users;
+namespace WebSocketWebApplication.IntegrationTest.Support;
 
-public abstract partial class BasicWebSocketUser : BasicUser
+internal class TestEnvironment
 {
-    public BasicWebSocketUser(
-        string host,
-        int port,
-        string path,
-        string? userName = null)
-        : base(userName ?? typeof(BasicWebSocketUser).Name)
+    public readonly TestApplication App;
+
+    public TestEnvironment()
     {
-        this.host = host;
-        this.port = port;
-        this.path = path;
+        this.App = new TestApplication();
     }
-
-    public void SetClientBuffer(
-        int receiveBufferSize = 1024,
-        int sendBufferSize = 1024)
-    {
-        this.sendBufferSize = sendBufferSize;
-        this.receiveBufferSize = receiveBufferSize;
-    }
-
-    protected readonly string host;
-
-    protected readonly int port;
-
-    protected readonly string path;
-
-    protected int receiveBufferSize = 1024;
-
-    protected int sendBufferSize = 1024;
 }

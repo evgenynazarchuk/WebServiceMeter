@@ -22,37 +22,15 @@
  * SOFTWARE.
  */
 
-namespace WebServiceMeter.Users;
+namespace RestWebApplication.Models;
 
-public abstract partial class BasicWebSocketUser : BasicUser
+public class FileStorage
 {
-    public BasicWebSocketUser(
-        string host,
-        int port,
-        string path,
-        string? userName = null)
-        : base(userName ?? typeof(BasicWebSocketUser).Name)
-    {
-        this.host = host;
-        this.port = port;
-        this.path = path;
-    }
+    public int Id { get; set; }
 
-    public void SetClientBuffer(
-        int receiveBufferSize = 1024,
-        int sendBufferSize = 1024)
-    {
-        this.sendBufferSize = sendBufferSize;
-        this.receiveBufferSize = receiveBufferSize;
-    }
+    public string Name { get; set; }
 
-    protected readonly string host;
+    public string Type { get; set; }
 
-    protected readonly int port;
-
-    protected readonly string path;
-
-    protected int receiveBufferSize = 1024;
-
-    protected int sendBufferSize = 1024;
+    public byte[] Content { get; set; }
 }

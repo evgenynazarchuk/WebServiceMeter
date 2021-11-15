@@ -1,4 +1,4 @@
-﻿/*
+/*
  * MIT License
  *
  * Copyright (c) Evgeny Nazarchuk.
@@ -22,37 +22,30 @@
  * SOFTWARE.
  */
 
-namespace WebServiceMeter.Users;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.AspNetCore.Mvc.Testing;
+using System.Threading.Tasks;
+using FluentAssertions;
+using WebServiceMeter;
 
-public abstract partial class BasicWebSocketUser : BasicUser
+namespace RestWebApplication.Tests;
+
+[TestClass]
+public class ContentTests
 {
-    public BasicWebSocketUser(
-        string host,
-        int port,
-        string path,
-        string? userName = null)
-        : base(userName ?? typeof(BasicWebSocketUser).Name)
+    [TestMethod]
+    public async Task GetDefaultStringContentTest()
     {
-        this.host = host;
-        this.port = port;
-        this.path = path;
+        // Arrange
+        var app = new WebApplicationFactory<Startup>();
+        var client = app.CreateClient();
+        var httpTool = new HttpTool(client);
+
+        // Act
+        var httpResult = await httpTool.GetAsync(path: "Test/GetDefaultString");
+
+        // Assert
+        httpResult.StatusCode.Should().Be(200);
+        httpResult.ContentAsUTF8.Should().Be("Hello world");
     }
-
-    public void SetClientBuffer(
-        int receiveBufferSize = 1024,
-        int sendBufferSize = 1024)
-    {
-        this.sendBufferSize = sendBufferSize;
-        this.receiveBufferSize = receiveBufferSize;
-    }
-
-    protected readonly string host;
-
-    protected readonly int port;
-
-    protected readonly string path;
-
-    protected int receiveBufferSize = 1024;
-
-    protected int sendBufferSize = 1024;
 }

@@ -22,37 +22,58 @@
  * SOFTWARE.
  */
 
-namespace WebServiceMeter.Users;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
 
-public abstract partial class BasicWebSocketUser : BasicUser
+namespace WebServiceMeter.Runner;
+
+[Controller]
+[Route("[controller]/[action]")]
+public class TestRunnerController : ControllerBase
 {
-    public BasicWebSocketUser(
-        string host,
-        int port,
-        string path,
-        string? userName = null)
-        : base(userName ?? typeof(BasicWebSocketUser).Name)
+    private readonly TestRunnerService _testRunner;
+
+    public TestRunnerController(TestRunnerService testRunner)
     {
-        this.host = host;
-        this.port = port;
-        this.path = path;
+        this._testRunner = testRunner;
     }
 
-    public void SetClientBuffer(
-        int receiveBufferSize = 1024,
-        int sendBufferSize = 1024)
+    [HttpGet]
+    public IActionResult GetTestsDetails()
     {
-        this.sendBufferSize = sendBufferSize;
-        this.receiveBufferSize = receiveBufferSize;
+        var testsDetails = this._testRunner.GetTestsDetails();
+
+        return Ok(testsDetails);
     }
 
-    protected readonly string host;
+    [HttpPost]
+    public async Task<IActionResult> StartTest([FromBody] StartTestMethodDto startTestDto)
+    {
+        try
+        {
+            await this._testRunner.StartTestAsync(startTestDto);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
 
-    protected readonly int port;
+        return Ok();
+    }
 
-    protected readonly string path;
+    [HttpGet]
+    public IActionResult GetStatus()
+    {
+        var status = this._testRunner.GetStatus();
 
-    protected int receiveBufferSize = 1024;
-
-    protected int sendBufferSize = 1024;
+        if (status is not null)
+        {
+            return BadRequest(status);
+        }
+        else
+        {
+            return Ok("Test Runner is available");
+        }
+    }
 }

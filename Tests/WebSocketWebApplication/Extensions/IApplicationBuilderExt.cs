@@ -22,37 +22,19 @@
  * SOFTWARE.
  */
 
-namespace WebServiceMeter.Users;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using WebSocketWebApplication.Middleware;
+using WebSocketWebApplication.Services;
 
-public abstract partial class BasicWebSocketUser : BasicUser
+namespace WebSocketWebApplication.Extensions;
+
+public static class IApplicationBuilderExt
 {
-    public BasicWebSocketUser(
-        string host,
-        int port,
-        string path,
-        string? userName = null)
-        : base(userName ?? typeof(BasicWebSocketUser).Name)
+    public static IApplicationBuilder MapWebSocketManager(this IApplicationBuilder app,
+                                                    PathString path,
+                                                    IWebSocketHandler handler)
     {
-        this.host = host;
-        this.port = port;
-        this.path = path;
+        return app.Map(path, (_app) => _app.UseMiddleware<WebSocketHandlerMiddleware>(handler));
     }
-
-    public void SetClientBuffer(
-        int receiveBufferSize = 1024,
-        int sendBufferSize = 1024)
-    {
-        this.sendBufferSize = sendBufferSize;
-        this.receiveBufferSize = receiveBufferSize;
-    }
-
-    protected readonly string host;
-
-    protected readonly int port;
-
-    protected readonly string path;
-
-    protected int receiveBufferSize = 1024;
-
-    protected int sendBufferSize = 1024;
 }

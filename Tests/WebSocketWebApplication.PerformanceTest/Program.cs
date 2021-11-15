@@ -22,37 +22,17 @@
  * SOFTWARE.
  */
 
-namespace WebServiceMeter.Users;
+using System.Reflection;
+using System.Threading.Tasks;
+using WebServiceMeter;
 
-public abstract partial class BasicWebSocketUser : BasicUser
+namespace WebSocketWebApplication.PerformanceTest;
+
+internal class Program
 {
-    public BasicWebSocketUser(
-        string host,
-        int port,
-        string path,
-        string? userName = null)
-        : base(userName ?? typeof(BasicWebSocketUser).Name)
+    static async Task Main(string[] args)
     {
-        this.host = host;
-        this.port = port;
-        this.path = path;
+        var runner = new TestRunner(args, Assembly.GetExecutingAssembly());
+        await runner.StartAsync();
     }
-
-    public void SetClientBuffer(
-        int receiveBufferSize = 1024,
-        int sendBufferSize = 1024)
-    {
-        this.sendBufferSize = sendBufferSize;
-        this.receiveBufferSize = receiveBufferSize;
-    }
-
-    protected readonly string host;
-
-    protected readonly int port;
-
-    protected readonly string path;
-
-    protected int receiveBufferSize = 1024;
-
-    protected int sendBufferSize = 1024;
 }

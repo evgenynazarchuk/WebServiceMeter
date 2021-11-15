@@ -1,4 +1,4 @@
-﻿/*
+/*
  * MIT License
  *
  * Copyright (c) Evgeny Nazarchuk.
@@ -22,37 +22,31 @@
  * SOFTWARE.
  */
 
-namespace WebServiceMeter.Users;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.AspNetCore.Mvc.Testing;
+using System.Threading.Tasks;
+using FluentAssertions;
+using WebServiceMeter;
+using RestWebApplication.Models;
 
-public abstract partial class BasicWebSocketUser : BasicUser
+namespace RestWebApplication.Tests;
+
+[TestClass]
+public class JsonContentTests
 {
-    public BasicWebSocketUser(
-        string host,
-        int port,
-        string path,
-        string? userName = null)
-        : base(userName ?? typeof(BasicWebSocketUser).Name)
+    [TestMethod]
+    public async Task GetDefaultObjectTest()
     {
-        this.host = host;
-        this.port = port;
-        this.path = path;
+        // Arrange
+        var app = new WebApplicationFactory<Startup>();
+        var client = app.CreateClient();
+        var httpTool = new HttpTool(client);
+
+        // Act
+        var person = await httpTool.GetAsJsonAsync<Person>(path: "Test/GetDefaultObject");
+
+        // Assert
+        person.Id.Should().Be(-1);
+        person.Name.Should().Be("TestName");
     }
-
-    public void SetClientBuffer(
-        int receiveBufferSize = 1024,
-        int sendBufferSize = 1024)
-    {
-        this.sendBufferSize = sendBufferSize;
-        this.receiveBufferSize = receiveBufferSize;
-    }
-
-    protected readonly string host;
-
-    protected readonly int port;
-
-    protected readonly string path;
-
-    protected int receiveBufferSize = 1024;
-
-    protected int sendBufferSize = 1024;
 }

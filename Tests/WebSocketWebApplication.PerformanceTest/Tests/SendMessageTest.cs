@@ -22,37 +22,32 @@
  * SOFTWARE.
  */
 
-namespace WebServiceMeter.Users;
+using System.Threading.Tasks;
+using WebServiceMeter;
 
-public abstract partial class BasicWebSocketUser : BasicUser
+namespace WebSocketWebApplication.PerformanceTest.Tests;
+
+//[PerformanceTestClass]
+public class SendMessageTest
 {
-    public BasicWebSocketUser(
-        string host,
-        int port,
-        string path,
-        string? userName = null)
-        : base(userName ?? typeof(BasicWebSocketUser).Name)
+    [PerformanceTest(60, 5000)]
+    public async Task SendMessageHelloWorldTest(int seconds, int usersCount)
     {
-        this.host = host;
-        this.port = port;
-        this.path = path;
+        var user = new WebSocketUserTest("localhost", 5000, "ws");
+        var plan = new ActiveUsersOnPeriod(user, usersCount, seconds.Seconds());
+
+        await new Scenario()
+            .AddSequentialPlans(plan)
+            .Start();
     }
 
-    public void SetClientBuffer(
-        int receiveBufferSize = 1024,
-        int sendBufferSize = 1024)
+    public class WebSocketUserTest : WebSocketUser
     {
-        this.sendBufferSize = sendBufferSize;
-        this.receiveBufferSize = receiveBufferSize;
+        public WebSocketUserTest(string host, int port, string path) : base(host, port, path) { }
+
+        protected override async Task PerformanceAsync(WebSocketTool client)
+        {
+            await SendMessage(client, "Hello world");
+        }
     }
-
-    protected readonly string host;
-
-    protected readonly int port;
-
-    protected readonly string path;
-
-    protected int receiveBufferSize = 1024;
-
-    protected int sendBufferSize = 1024;
 }

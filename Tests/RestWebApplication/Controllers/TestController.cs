@@ -22,37 +22,29 @@
  * SOFTWARE.
  */
 
-namespace WebServiceMeter.Users;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using RestWebApplication.Models;
 
-public abstract partial class BasicWebSocketUser : BasicUser
+namespace RestWebApplication.Controllers;
+
+[ApiController]
+[Route("[controller]/[action]")]
+public class TestController : ControllerBase
 {
-    public BasicWebSocketUser(
-        string host,
-        int port,
-        string path,
-        string? userName = null)
-        : base(userName ?? typeof(BasicWebSocketUser).Name)
+    [HttpGet]
+    public async Task<IActionResult> GetDefaultString()
     {
-        this.host = host;
-        this.port = port;
-        this.path = path;
+        return Ok("Hello world");
     }
 
-    public void SetClientBuffer(
-        int receiveBufferSize = 1024,
-        int sendBufferSize = 1024)
+    [HttpGet]
+    public async Task<IActionResult> GetDefaultObject()
     {
-        this.sendBufferSize = sendBufferSize;
-        this.receiveBufferSize = receiveBufferSize;
+        return Ok(new Person { Id = -1, Name = "TestName" });
     }
-
-    protected readonly string host;
-
-    protected readonly int port;
-
-    protected readonly string path;
-
-    protected int receiveBufferSize = 1024;
-
-    protected int sendBufferSize = 1024;
 }

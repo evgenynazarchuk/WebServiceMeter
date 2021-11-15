@@ -136,8 +136,8 @@ public sealed class Scenario
                 if (plan.User is BasicWebSocketUser)
                     plan.User.Watcher.AddReport(WebSocketReportFileSingleton.GetInstance(this._projectName, this._testRunId));
 
-                if (plan.User is BasicChromiumUser)
-                    plan.User.Watcher.AddReport(ChromiumReportFileSingleton.GetInstance(this._projectName, this._testRunId));
+                //if (plan.User is BasicChromiumUser)
+                //    plan.User.Watcher.AddReport(ChromiumReportFileSingleton.GetInstance(this._projectName, this._testRunId));
             }
         }
     }

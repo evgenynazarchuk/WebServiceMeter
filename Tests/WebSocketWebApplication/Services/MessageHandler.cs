@@ -22,37 +22,28 @@
  * SOFTWARE.
  */
 
-namespace WebServiceMeter.Users;
+using System.Net.WebSockets;
+using System.Text;
+using System.Threading.Tasks;
 
-public abstract partial class BasicWebSocketUser : BasicUser
+namespace WebSocketWebApplication.Services;
+
+public class MessageHandler : WebSocketHandler
 {
-    public BasicWebSocketUser(
-        string host,
-        int port,
-        string path,
-        string? userName = null)
-        : base(userName ?? typeof(BasicWebSocketUser).Name)
+    public MessageHandler(IConnectionHandler connectionHandler) : base(connectionHandler) { }
+
+    public override async Task OnConnectedAsync(WebSocket socket)
     {
-        this.host = host;
-        this.port = port;
-        this.path = path;
+        await base.OnConnectedAsync(socket);
+        var socketId = this.connectionHandler.GetSocketId(socket);
+        await this.SendMessageToAllAsync($"{socketId} is now connected");
     }
 
-    public void SetClientBuffer(
-        int receiveBufferSize = 1024,
-        int sendBufferSize = 1024)
+    public override Task ReceiveAsync(WebSocket socket, WebSocketReceiveResult result, byte[] buffer)
     {
-        this.sendBufferSize = sendBufferSize;
-        this.receiveBufferSize = receiveBufferSize;
+        var socketId = this.connectionHandler.GetSocketId(socket);
+        var text = Encoding.UTF8.GetString(buffer, 0, result.Count);
+        var message = $"{socketId} said: {text}";
+        return this.SendMessageToAllAsync(message);
     }
-
-    protected readonly string host;
-
-    protected readonly int port;
-
-    protected readonly string path;
-
-    protected int receiveBufferSize = 1024;
-
-    protected int sendBufferSize = 1024;
 }

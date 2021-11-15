@@ -22,37 +22,47 @@
  * SOFTWARE.
  */
 
-namespace WebServiceMeter.Users;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
 
-public abstract partial class BasicWebSocketUser : BasicUser
+namespace WebServiceMeter.Runner;
+
+public class TestRunnerStartup
 {
-    public BasicWebSocketUser(
-        string host,
-        int port,
-        string path,
-        string? userName = null)
-        : base(userName ?? typeof(BasicWebSocketUser).Name)
+    public TestRunnerStartup(IConfiguration configuration)
     {
-        this.host = host;
-        this.port = port;
-        this.path = path;
+        Configuration = configuration;
     }
 
-    public void SetClientBuffer(
-        int receiveBufferSize = 1024,
-        int sendBufferSize = 1024)
+    public IConfiguration Configuration { get; }
+
+    public void ConfigureServices(IServiceCollection services)
     {
-        this.sendBufferSize = sendBufferSize;
-        this.receiveBufferSize = receiveBufferSize;
+        services.AddControllers();
+        services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "Test Runner Web Service", Version = "v1" });
+        });
     }
 
-    protected readonly string host;
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        app.UseDeveloperExceptionPage();
+        app.UseSwagger();
+        app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Test Runner Web Service v1"));
 
-    protected readonly int port;
+        //app.UseHttpsRedirection();
 
-    protected readonly string path;
+        app.UseRouting();
 
-    protected int receiveBufferSize = 1024;
+        //app.UseAuthorization();
 
-    protected int sendBufferSize = 1024;
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+        });
+    }
 }

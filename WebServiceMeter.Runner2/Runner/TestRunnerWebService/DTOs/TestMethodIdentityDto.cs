@@ -22,37 +22,13 @@
  * SOFTWARE.
  */
 
-namespace WebServiceMeter.Users;
+using System;
 
-public abstract partial class BasicWebSocketUser : BasicUser
+namespace WebServiceMeter.Runner;
+
+public class TestMethodIdentityDto
 {
-    public BasicWebSocketUser(
-        string host,
-        int port,
-        string path,
-        string? userName = null)
-        : base(userName ?? typeof(BasicWebSocketUser).Name)
-    {
-        this.host = host;
-        this.port = port;
-        this.path = path;
-    }
+    public string TestClassName { get; set; } = String.Empty;
 
-    public void SetClientBuffer(
-        int receiveBufferSize = 1024,
-        int sendBufferSize = 1024)
-    {
-        this.sendBufferSize = sendBufferSize;
-        this.receiveBufferSize = receiveBufferSize;
-    }
-
-    protected readonly string host;
-
-    protected readonly int port;
-
-    protected readonly string path;
-
-    protected int receiveBufferSize = 1024;
-
-    protected int sendBufferSize = 1024;
+    public string TestMethodName { get; set; } = String.Empty;
 }

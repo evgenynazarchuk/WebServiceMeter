@@ -3,21 +3,16 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
-	  <Nullable>enable</Nullable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="5.0.11" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\WebServiceMeter.Runner\WebServiceMeter.Runner.csproj" />
     <ProjectReference Include="..\..\WebServiceMeter\WebServiceMeter.csproj" />
+    <ProjectReference Include="..\WebSocketWebApplication\WebSocketWebApplication.csproj" />
   </ItemGroup>
-
-	<ItemGroup>
-		<Protobuf Include="Protos\usermessager.proto" GrpcServices="Client" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Grpc.AspNetCore" Version="2.40.0" />
-				
-	</ItemGroup>
 
 </Project>

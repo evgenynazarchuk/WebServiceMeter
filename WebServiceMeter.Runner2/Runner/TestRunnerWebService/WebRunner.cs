@@ -22,37 +22,31 @@
  * SOFTWARE.
  */
 
-namespace WebServiceMeter.Users;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using System.Reflection;
+using WebServiceMeter.Runner;
 
-public abstract partial class BasicWebSocketUser : BasicUser
+namespace WebServiceMeter;
+
+public class WebRunner
 {
-    public BasicWebSocketUser(
-        string host,
-        int port,
-        string path,
-        string? userName = null)
-        : base(userName ?? typeof(BasicWebSocketUser).Name)
+    public static void Start(Assembly assembly, WebServiceConfigDto config)
     {
-        this.host = host;
-        this.port = port;
-        this.path = path;
+        Host.CreateDefaultBuilder()
+           .ConfigureWebHostDefaults(webBuilder =>
+           {
+               webBuilder.UseStartup<TestRunnerStartup>();
+
+               webBuilder.ConfigureServices(services =>
+               {
+                   services.AddSingleton<TestRunnerService>(x => new TestRunnerService(assembly));
+               });
+
+               webBuilder.UseUrls($"http://*:{config.TestRunnerPort}");
+           })
+           .Build()
+           .Run();
     }
-
-    public void SetClientBuffer(
-        int receiveBufferSize = 1024,
-        int sendBufferSize = 1024)
-    {
-        this.sendBufferSize = sendBufferSize;
-        this.receiveBufferSize = receiveBufferSize;
-    }
-
-    protected readonly string host;
-
-    protected readonly int port;
-
-    protected readonly string path;
-
-    protected int receiveBufferSize = 1024;
-
-    protected int sendBufferSize = 1024;
 }
