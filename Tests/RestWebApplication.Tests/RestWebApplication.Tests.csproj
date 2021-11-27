@@ -16,8 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\WebServiceMeter.Runner\WebServiceMeter.Runner.csproj" />
-    <ProjectReference Include="..\..\WebServiceMeter\WebServiceMeter.csproj" />
+    <ProjectReference Include="..\..\ServiceMeter.Runner\ServiceMeter.Runner.csproj" />
+    <ProjectReference Include="..\..\ServiceMeter\ServiceMeter.csproj" />
     <ProjectReference Include="..\RestWebApplication\RestWebApplication.csproj" />
   </ItemGroup>
 

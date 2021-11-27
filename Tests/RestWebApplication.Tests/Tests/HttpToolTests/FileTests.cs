@@ -28,7 +28,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using WebServiceMeter;
+using ServiceMeter;
 
 namespace RestWebApplication.Tests;
 

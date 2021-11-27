@@ -23,7 +23,7 @@
  */
 
 using System.Threading.Tasks;
-using WebServiceMeter;
+using ServiceMeter;
 
 namespace WebSocketWebApplication.PerformanceTest.Tests;
 

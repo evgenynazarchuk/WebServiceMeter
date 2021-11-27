@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\WebServiceMeter\WebServiceMeter.csproj" />
+    <ProjectReference Include="..\..\ServiceMeter\ServiceMeter.csproj" />
   </ItemGroup>
 
 </Project>

@@ -27,7 +27,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RestWebApplication.Models;
 using System.Threading.Tasks;
-using WebServiceMeter;
+using ServiceMeter;
 
 namespace RestWebApplication.Tests;
 

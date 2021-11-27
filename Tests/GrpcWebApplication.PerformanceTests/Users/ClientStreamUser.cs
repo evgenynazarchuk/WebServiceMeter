@@ -25,7 +25,7 @@
 using Google.Protobuf.WellKnownTypes;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using WebServiceMeter;
+using ServiceMeter;
 
 namespace GrpcWebApplication.PerformanceTests.Users;
 

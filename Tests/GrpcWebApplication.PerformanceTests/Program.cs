@@ -24,7 +24,7 @@
 
 using System.Reflection;
 using System.Threading.Tasks;
-using WebServiceMeter;
+using ServiceMeter;
 
 namespace GrpcWebApplication.PerformanceTests
 {
