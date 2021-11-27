@@ -26,8 +26,9 @@ namespace ServiceMeter.Users;
 
 public abstract partial class BasicJavascriptUser : BasicUser
 {
-    public async Task Post()
+    public async Task Post(string url, string body)
     {
+        
         //
         await this.page.EvaluateAsync(@"
 fetch('https://jsonplaceholder.typicode.com/posts', {

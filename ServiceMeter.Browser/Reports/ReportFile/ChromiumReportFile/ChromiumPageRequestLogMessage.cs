@@ -32,9 +32,9 @@ public class ChromiumPageRequestLogMessage
 
     public string? Request { get; set; }
 
-    public TimeSpan? RequestStart { get; set; }
+    public long RequestStart { get; set; }
 
-    public TimeSpan? ResponseStart { get; set; }
+    public long ResponseStart { get; set; }
 
-    public TimeSpan? ResponseEnd { get; set; }
+    public long ResponseEnd { get; set; }
 }
