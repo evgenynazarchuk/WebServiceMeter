@@ -1,0 +1,476 @@
+﻿
+<html>
+<head>
+<script src='https://cdn.plot.ly/plotly-2.3.0.min.js'></script>
+
+<style>
+body {
+    background-color: #1A1A1A;
+}
+</style>
+
+</head>
+<body>
+<div id='ResponseTimeChart' style='width:99%;height:400px;'></div>
+<div id='CompletedRequestsChart' style='width:99%;height:400px;'></div>
+<div id='SentTimeChart' style='width:99%;height:400px;'></div>
+<div id='WaitTimeChart' style='width:99%;height:400px;'></div>
+<div id='ReceivedTimeChart' style='width:99%;height:400px;'></div>
+<div id='SentBytesChart' style='width:99%;height:400px;'></div>
+<div id='ReceivedBytesChart' style='width:99%;height:400px;'></div>
+
+
+<script>
+const groupedRawLog = [{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":0,"CompletedRequests":1000,"ResponseTime":1521798.003,"SentTime":1789.619,"WaitTime":1519350.646,"ReceivedTime":657.738},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":0,"CompletedRequests":600,"ResponseTime":2743834.345,"SentTime":2627.585,"WaitTime":2740442.428333333,"ReceivedTime":764.3316666666667},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":1,"CompletedRequests":1613,"ResponseTime":1137709.175449473,"SentTime":2352.5040297582145,"WaitTime":1134716.8853068815,"ReceivedTime":639.78611283323},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":1,"CompletedRequests":804,"ResponseTime":2158925.5360696516,"SentTime":2165.297263681592,"WaitTime":2156454.0012437813,"ReceivedTime":306.2375621890547},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":2,"CompletedRequests":1655,"ResponseTime":1128642.7842900301,"SentTime":2436.8731117824773,"WaitTime":1125581.7818731118,"ReceivedTime":624.1293051359517},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":2,"CompletedRequests":892,"ResponseTime":2175188.871076233,"SentTime":2793.0369955156953,"WaitTime":2171915.8374439464,"ReceivedTime":479.9966367713005},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":3,"CompletedRequests":1781,"ResponseTime":1121365.54856822,"SentTime":2192.4519932622125,"WaitTime":1118834.449747333,"ReceivedTime":338.6468276249298},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":3,"CompletedRequests":908,"ResponseTime":2145874.8094713655,"SentTime":2389.2411894273127,"WaitTime":2143080.932819383,"ReceivedTime":404.63546255506606},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":4,"CompletedRequests":1591,"ResponseTime":1122473.430546826,"SentTime":1527.1414204902576,"WaitTime":1120714.0446260213,"ReceivedTime":232.24450031426775},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":4,"CompletedRequests":918,"ResponseTime":2092639.4727668846,"SentTime":1977.9400871459695,"WaitTime":2090510.2592592593,"ReceivedTime":151.27342047930284},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":5,"CompletedRequests":997,"ResponseTime":2080678.6519558677,"SentTime":2124.071213640923,"WaitTime":2078298.5215646941,"ReceivedTime":256.0591775325978},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":5,"CompletedRequests":1745,"ResponseTime":1092501.828653295,"SentTime":1977.2567335243552,"WaitTime":1090377.1151862463,"ReceivedTime":147.45673352435531},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":6,"CompletedRequests":1732,"ResponseTime":1098756.0484988452,"SentTime":1592.108545034642,"WaitTime":1096973.9024249422,"ReceivedTime":190.03752886836028},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":6,"CompletedRequests":928,"ResponseTime":2086110.228448276,"SentTime":1234.8512931034484,"WaitTime":2084592.0603448276,"ReceivedTime":283.31681034482756},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":7,"CompletedRequests":942,"ResponseTime":2134275.432059448,"SentTime":1870.9331210191083,"WaitTime":2132228.1974522294,"ReceivedTime":176.30148619957538},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":7,"CompletedRequests":1658,"ResponseTime":1123923.7876960193,"SentTime":1378.4372738238842,"WaitTime":1122105.9131483715,"ReceivedTime":439.4372738238842},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":8,"CompletedRequests":885,"ResponseTime":2155582.69039548,"SentTime":2592.3378531073445,"WaitTime":2152439.9096045196,"ReceivedTime":550.4429378531073},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":8,"CompletedRequests":1693,"ResponseTime":1144909.3349084465,"SentTime":2059.040165386887,"WaitTime":1142478.2362669816,"ReceivedTime":372.0584760779681},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":9,"CompletedRequests":939,"ResponseTime":2066618.4100106496,"SentTime":1682.0010649627263,"WaitTime":2064691.6581469649,"ReceivedTime":244.75079872204472},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":9,"CompletedRequests":1771,"ResponseTime":1092854.0446075664,"SentTime":1455.172783738001,"WaitTime":1091253.3235460191,"ReceivedTime":145.54827780914738},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":10,"CompletedRequests":1743,"ResponseTime":1096194.2323580035,"SentTime":1704.8955823293172,"WaitTime":1094096.6735513483,"ReceivedTime":392.6632243258749},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":10,"CompletedRequests":968,"ResponseTime":2109536.9132231404,"SentTime":1162.7438016528927,"WaitTime":2108205.027892562,"ReceivedTime":169.14152892561984},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":11,"CompletedRequests":1759,"ResponseTime":1102449.3894258102,"SentTime":1600.888573052871,"WaitTime":1100668.6793632745,"ReceivedTime":179.8214894826606},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":11,"CompletedRequests":889,"ResponseTime":2136697.051743532,"SentTime":2087.8818897637793,"WaitTime":2134433.475815523,"ReceivedTime":175.69403824521936},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":12,"CompletedRequests":1718,"ResponseTime":1102768.6135040745,"SentTime":1787.6554132712456,"WaitTime":1100447.6920838184,"ReceivedTime":533.2660069848661},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":12,"CompletedRequests":952,"ResponseTime":2117109.50210084,"SentTime":2149.3035714285716,"WaitTime":2114502.6102941176,"ReceivedTime":457.5882352941176},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":13,"CompletedRequests":1701,"ResponseTime":1109658.7724867724,"SentTime":1395.9435626102293,"WaitTime":1107941.214579659,"ReceivedTime":321.6143445032334},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":13,"CompletedRequests":904,"ResponseTime":2094855.5066371681,"SentTime":1961.5486725663716,"WaitTime":2092778.2986725664,"ReceivedTime":115.65929203539822},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":14,"CompletedRequests":1784,"ResponseTime":1100751.659753363,"SentTime":1685.335201793722,"WaitTime":1098814.1507847533,"ReceivedTime":252.17376681614348},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":14,"CompletedRequests":923,"ResponseTime":2104262.50595883,"SentTime":2077.478873239437,"WaitTime":2102043.855904659,"ReceivedTime":141.17118093174432},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":15,"CompletedRequests":1000,"ResponseTime":2094446.877,"SentTime":1666.266,"WaitTime":2092638.105,"ReceivedTime":142.506},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":15,"CompletedRequests":1740,"ResponseTime":1089381.9143678162,"SentTime":1640.3235632183907,"WaitTime":1087574.2620689655,"ReceivedTime":167.3287356321839},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":16,"CompletedRequests":1730,"ResponseTime":1101537.4092485548,"SentTime":1593.6797687861272,"WaitTime":1099649.4242774567,"ReceivedTime":294.3052023121387},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":16,"CompletedRequests":886,"ResponseTime":2143226.478555305,"SentTime":1805.4074492099323,"WaitTime":2140378.5169300227,"ReceivedTime":1042.5541760722347},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":17,"CompletedRequests":1735,"ResponseTime":1100434.642074928,"SentTime":2135.1821325648416,"WaitTime":1097911.8063400576,"ReceivedTime":387.6536023054755},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":17,"CompletedRequests":975,"ResponseTime":2139552.775384615,"SentTime":2477.9938461538463,"WaitTime":2136208.5456410255,"ReceivedTime":866.2358974358974},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":18,"CompletedRequests":1655,"ResponseTime":1103468.9625377643,"SentTime":1739.3093655589123,"WaitTime":1101443.2356495468,"ReceivedTime":286.41752265861027},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":18,"CompletedRequests":825,"ResponseTime":2123420.207272727,"SentTime":2037.6727272727273,"WaitTime":2121248.1321212123,"ReceivedTime":134.40242424242425},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":19,"CompletedRequests":1766,"ResponseTime":1136677.8035107588,"SentTime":1637.4399773499433,"WaitTime":1134700.9026047564,"ReceivedTime":339.4609286523216},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":19,"CompletedRequests":885,"ResponseTime":2171162.0790960453,"SentTime":2359.7016949152544,"WaitTime":2167759.125423729,"ReceivedTime":1043.25197740113},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":20,"CompletedRequests":1701,"ResponseTime":1099279.747207525,"SentTime":1426.2927689594355,"WaitTime":1097009.7630805408,"ReceivedTime":843.6913580246913},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":20,"CompletedRequests":941,"ResponseTime":2114486.1806588736,"SentTime":1400.7725823591923,"WaitTime":2112725.044633369,"ReceivedTime":360.36344314558977},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":21,"CompletedRequests":1697,"ResponseTime":1115389.3193871537,"SentTime":1815.7890394814378,"WaitTime":1113394.569239835,"ReceivedTime":178.96110783736006},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":21,"CompletedRequests":891,"ResponseTime":2170242.4736251403,"SentTime":2171.3120089786757,"WaitTime":2167615.012345679,"ReceivedTime":456.1492704826038},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":22,"CompletedRequests":926,"ResponseTime":2089744.8110151188,"SentTime":2164.1544276457885,"WaitTime":2087408.7667386609,"ReceivedTime":171.88984881209504},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":22,"CompletedRequests":1776,"ResponseTime":1093742.8688063063,"SentTime":1726.9707207207207,"WaitTime":1091859.6953828828,"ReceivedTime":156.2027027027027},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":23,"CompletedRequests":1680,"ResponseTime":1122315.624404762,"SentTime":2105.690476190476,"WaitTime":1118999.0869047618,"ReceivedTime":1210.8470238095238},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":23,"CompletedRequests":916,"ResponseTime":2136081.63209607,"SentTime":1848.1582969432313,"WaitTime":2133800.593886463,"ReceivedTime":432.8799126637555},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":24,"CompletedRequests":1782,"ResponseTime":1088085.3956228956,"SentTime":1643.628507295174,"WaitTime":1085922.9102132434,"ReceivedTime":518.8569023569023},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":24,"CompletedRequests":886,"ResponseTime":2141070.539503386,"SentTime":2449.8069977426635,"WaitTime":2138091.8306997744,"ReceivedTime":528.9018058690745},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":25,"CompletedRequests":979,"ResponseTime":2091129.7528089888,"SentTime":1322.1215526046988,"WaitTime":2089657.426966292,"ReceivedTime":150.20429009193055},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":25,"CompletedRequests":1682,"ResponseTime":1118347.4655172413,"SentTime":1669.3246135552913,"WaitTime":1116528.4803804995,"ReceivedTime":149.66052318668252},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":26,"CompletedRequests":1759,"ResponseTime":1110096.633882888,"SentTime":1507.3445139283683,"WaitTime":1108433.9124502558,"ReceivedTime":155.37691870380897},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":26,"CompletedRequests":932,"ResponseTime":2140539.319742489,"SentTime":1692.8916309012875,"WaitTime":2138117.42167382,"ReceivedTime":729.0064377682403},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":27,"CompletedRequests":936,"ResponseTime":2114374.047008547,"SentTime":1664.8386752136753,"WaitTime":2112507.9423076925,"ReceivedTime":201.26602564102564},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":27,"CompletedRequests":1658,"ResponseTime":1102178.2424607961,"SentTime":1963.139324487334,"WaitTime":1099785.965018094,"ReceivedTime":429.13811821471654},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":28,"CompletedRequests":1717,"ResponseTime":1102692.5329062317,"SentTime":1757.976121141526,"WaitTime":1100364.7926616191,"ReceivedTime":569.7641234711706},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":28,"CompletedRequests":902,"ResponseTime":2128701.3359201774,"SentTime":1938.4933481152993,"WaitTime":2126337.89578714,"ReceivedTime":424.94678492239467},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":29,"CompletedRequests":905,"ResponseTime":2122110.3215469616,"SentTime":1359.3524861878452,"WaitTime":2120601.264088398,"ReceivedTime":149.7049723756906},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":29,"CompletedRequests":1805,"ResponseTime":1106448.2941828256,"SentTime":2107.926315789474,"WaitTime":1104065.0842105264,"ReceivedTime":275.2836565096953},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":30,"CompletedRequests":1704,"ResponseTime":1104353.1860328638,"SentTime":1667.3967136150234,"WaitTime":1102451.170774648,"ReceivedTime":234.61854460093898},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":30,"CompletedRequests":998,"ResponseTime":2130310.538076152,"SentTime":1423.4899799599198,"WaitTime":2128716.5480961925,"ReceivedTime":170.5},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":31,"CompletedRequests":1670,"ResponseTime":1120873.9353293413,"SentTime":1641.8754491017964,"WaitTime":1119042.24251497,"ReceivedTime":189.81736526946108},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":31,"CompletedRequests":840,"ResponseTime":2138077.3571428573,"SentTime":1373.1,"WaitTime":2135603.0821428574,"ReceivedTime":1101.175},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":32,"CompletedRequests":1743,"ResponseTime":1123709.1870338498,"SentTime":1670.4056224899598,"WaitTime":1121836.0734366036,"ReceivedTime":202.70797475616752},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":32,"CompletedRequests":962,"ResponseTime":2128027.3523908523,"SentTime":1225.997920997921,"WaitTime":2126603.2650727653,"ReceivedTime":198.0893970893971},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":33,"CompletedRequests":1760,"ResponseTime":1097679.518181818,"SentTime":1908.8414772727272,"WaitTime":1095220.228409091,"ReceivedTime":550.4482954545455},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":33,"CompletedRequests":888,"ResponseTime":2123425.136261261,"SentTime":1548.2376126126126,"WaitTime":2121312.414414414,"ReceivedTime":564.4842342342342},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":34,"CompletedRequests":977,"ResponseTime":2106188.4216990788,"SentTime":1285.740020470829,"WaitTime":2104613.855680655,"ReceivedTime":288.8259979529171},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":34,"CompletedRequests":1677,"ResponseTime":1099263.6839594515,"SentTime":1897.3482409063804,"WaitTime":1097107.8127608825,"ReceivedTime":258.52295766249256},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":35,"CompletedRequests":920,"ResponseTime":2109085.4717391306,"SentTime":1899.5076086956522,"WaitTime":2107029.2728260867,"ReceivedTime":156.69130434782608},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":35,"CompletedRequests":1769,"ResponseTime":1086298.8795929905,"SentTime":1402.4646693046918,"WaitTime":1084727.5353306953,"ReceivedTime":168.87959299039005},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":36,"CompletedRequests":909,"ResponseTime":2124116.4004400442,"SentTime":2073.954895489549,"WaitTime":2121678.297029703,"ReceivedTime":364.1485148514852},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":36,"CompletedRequests":1713,"ResponseTime":1094103.985405721,"SentTime":1711.992410974898,"WaitTime":1092077.0478692353,"ReceivedTime":314.94512551079976},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":37,"CompletedRequests":1839,"ResponseTime":1083229.6911364873,"SentTime":1727.758020663404,"WaitTime":1080950.3915171288,"ReceivedTime":551.5415986949429},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":37,"CompletedRequests":972,"ResponseTime":2119515.531893004,"SentTime":1446.7427983539094,"WaitTime":2117925.8477366255,"ReceivedTime":142.94135802469137},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":38,"CompletedRequests":904,"ResponseTime":2109442.428097345,"SentTime":1550.8008849557523,"WaitTime":2107745.8174778763,"ReceivedTime":145.80973451327435},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":38,"CompletedRequests":1721,"ResponseTime":1106954.9686228936,"SentTime":1684.8907611853574,"WaitTime":1105120.6449738524,"ReceivedTime":149.43288785589775},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":39,"CompletedRequests":1735,"ResponseTime":1106971.7331412104,"SentTime":1950.7342939481268,"WaitTime":1104716.9314121038,"ReceivedTime":304.06743515850144},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":39,"CompletedRequests":946,"ResponseTime":2107615.1247357293,"SentTime":2055.838266384778,"WaitTime":2105279.38372093,"ReceivedTime":279.90274841437633},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":40,"CompletedRequests":861,"ResponseTime":2137124.743321719,"SentTime":2023.376306620209,"WaitTime":2134516.4796747966,"ReceivedTime":584.8873403019744},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":40,"CompletedRequests":1664,"ResponseTime":1116826.9771634615,"SentTime":1576.2313701923076,"WaitTime":1115006.764423077,"ReceivedTime":243.98137019230768},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":41,"CompletedRequests":1714,"ResponseTime":1099316.6645274214,"SentTime":1745.3203033838972,"WaitTime":1097237.9900816802,"ReceivedTime":333.3541423570595},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":41,"CompletedRequests":1000,"ResponseTime":2095418.679,"SentTime":1120.56,"WaitTime":2094129.043,"ReceivedTime":169.076},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":42,"CompletedRequests":1728,"ResponseTime":1108185.0902777778,"SentTime":1639.7314814814815,"WaitTime":1106169.6915509258,"ReceivedTime":375.6672453703704},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":42,"CompletedRequests":930,"ResponseTime":2117256.5483870967,"SentTime":1642.6913978494624,"WaitTime":2115429.882795699,"ReceivedTime":183.9741935483871},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":43,"CompletedRequests":1742,"ResponseTime":1111234.8019517795,"SentTime":1864.3513203214695,"WaitTime":1108705.3163031,"ReceivedTime":665.1343283582089},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":43,"CompletedRequests":927,"ResponseTime":2112773.2179072276,"SentTime":1637.7119741100323,"WaitTime":2110433.6483279397,"ReceivedTime":701.8576051779935},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":44,"CompletedRequests":974,"ResponseTime":2090669.3665297742,"SentTime":1730.8921971252566,"WaitTime":2088737.6878850104,"ReceivedTime":200.7864476386037},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":44,"CompletedRequests":1702,"ResponseTime":1103952.7638072856,"SentTime":1641.358401880141,"WaitTime":1102162.9488836662,"ReceivedTime":148.45652173913044},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":45,"CompletedRequests":1700,"ResponseTime":1116792.4217647058,"SentTime":1809.2288235294118,"WaitTime":1114818.2235294117,"ReceivedTime":164.96941176470588},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":45,"CompletedRequests":922,"ResponseTime":2126862.029284165,"SentTime":2139.2418655097613,"WaitTime":2124022.596529284,"ReceivedTime":700.1908893709327},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":46,"CompletedRequests":1708,"ResponseTime":1117148.6627634661,"SentTime":1896.538056206089,"WaitTime":1114768.8887587823,"ReceivedTime":483.2359484777518},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":46,"CompletedRequests":904,"ResponseTime":2126333.469026549,"SentTime":1458.2378318584072,"WaitTime":2124689.3727876106,"ReceivedTime":185.858407079646},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":47,"CompletedRequests":1736,"ResponseTime":1103679.5155529955,"SentTime":1997.00633640553,"WaitTime":1101374.668202765,"ReceivedTime":307.8410138248848},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":47,"CompletedRequests":941,"ResponseTime":2091366.1477151967,"SentTime":2247.680127523911,"WaitTime":2088946.9596174282,"ReceivedTime":171.50797024442082},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":48,"CompletedRequests":1688,"ResponseTime":1115440.0124407583,"SentTime":2119.739336492891,"WaitTime":1112514.9295023696,"ReceivedTime":805.3436018957347},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":48,"CompletedRequests":923,"ResponseTime":2123116.8526543877,"SentTime":2864.6186348862407,"WaitTime":2119819.2448537378,"ReceivedTime":432.9891657638137},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":49,"CompletedRequests":1744,"ResponseTime":1107898.7230504588,"SentTime":1654.1060779816514,"WaitTime":1106082.2213302753,"ReceivedTime":162.39564220183487},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":49,"CompletedRequests":965,"ResponseTime":2112988.210362694,"SentTime":1813.9875647668393,"WaitTime":2110669.2227979274,"ReceivedTime":505},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":50,"CompletedRequests":1715,"ResponseTime":1112161.76909621,"SentTime":1945.3714285714286,"WaitTime":1109968.547521866,"ReceivedTime":247.85014577259474},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":50,"CompletedRequests":904,"ResponseTime":2117135.923672566,"SentTime":2425.337389380531,"WaitTime":2114558.6272123894,"ReceivedTime":151.95907079646017},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":51,"CompletedRequests":1724,"ResponseTime":1115789.5852668213,"SentTime":1602.9831786542923,"WaitTime":1113961.1044083526,"ReceivedTime":225.49767981438515},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":51,"CompletedRequests":943,"ResponseTime":2093134.811240721,"SentTime":1680.711558854719,"WaitTime":2091174.309650053,"ReceivedTime":279.7900318133616},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":52,"CompletedRequests":1690,"ResponseTime":1106363.198224852,"SentTime":2037.4556213017752,"WaitTime":1103921.1076923078,"ReceivedTime":404.63491124260355},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":52,"CompletedRequests":936,"ResponseTime":2110995.3653846155,"SentTime":2318.9273504273506,"WaitTime":2108512.2446581195,"ReceivedTime":164.19337606837607},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":53,"CompletedRequests":1768,"ResponseTime":1099791.4575791855,"SentTime":1364.0503393665158,"WaitTime":1098312.3291855203,"ReceivedTime":115.07805429864253},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":53,"CompletedRequests":929,"ResponseTime":2081061.4499461786,"SentTime":1062.194833153929,"WaitTime":2079875.4897739505,"ReceivedTime":123.76533907427341},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":54,"CompletedRequests":1807,"ResponseTime":1078907.948533481,"SentTime":1132.9988931931377,"WaitTime":1077617.079690094,"ReceivedTime":157.8699501936912},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":54,"CompletedRequests":997,"ResponseTime":2063910.7512537614,"SentTime":1308.6830491474423,"WaitTime":2062415.220661986,"ReceivedTime":186.84754262788366},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":55,"CompletedRequests":1780,"ResponseTime":1099587.336516854,"SentTime":1035.8044943820225,"WaitTime":1098165.8376404494,"ReceivedTime":385.6943820224719},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":55,"CompletedRequests":879,"ResponseTime":2109230.9499431173,"SentTime":1408.7178612059158,"WaitTime":2107718.0307167238,"ReceivedTime":104.20136518771331},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":56,"CompletedRequests":999,"ResponseTime":2075900.2282282282,"SentTime":1410.077077077077,"WaitTime":2074123.8068068067,"ReceivedTime":366.34434434434434},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":56,"CompletedRequests":1748,"ResponseTime":1102214.2974828375,"SentTime":1090.1189931350114,"WaitTime":1100833.5371853546,"ReceivedTime":290.64130434782606},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":57,"CompletedRequests":1817,"ResponseTime":1096606.8035222895,"SentTime":1055.7121629058888,"WaitTime":1095380.8717666483,"ReceivedTime":170.21959273527793},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":57,"CompletedRequests":942,"ResponseTime":2069177.0063694268,"SentTime":791.8694267515923,"WaitTime":2068269.186836518,"ReceivedTime":115.95010615711253},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":58,"CompletedRequests":953,"ResponseTime":2081946.3252885623,"SentTime":1534.7156348373558,"WaitTime":2080210.4186778595,"ReceivedTime":201.1909758656873},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":58,"CompletedRequests":1742,"ResponseTime":1093059.819173364,"SentTime":1310.8668197474167,"WaitTime":1091329.2600459242,"ReceivedTime":419.6923076923077},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":59,"CompletedRequests":1814,"ResponseTime":1098936.11907387,"SentTime":1254.4878721058435,"WaitTime":1096981.2486218303,"ReceivedTime":700.3825799338479},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":59,"CompletedRequests":935,"ResponseTime":2094931.3711229947,"SentTime":1192.3368983957218,"WaitTime":2093334.2930481283,"ReceivedTime":404.74117647058824},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod1","RequestLabel":"100ms","StatusCode":200,"EndResponseTime":60,"CompletedRequests":200,"ResponseTime":1080760.74,"SentTime":849.68,"WaitTime":1079785.925,"ReceivedTime":125.135},
+{"User":"","Request":"http://localhost/Test/TestWaitMethod2","RequestLabel":"200ms","StatusCode":200,"EndResponseTime":60,"CompletedRequests":200,"ResponseTime":2048384.32,"SentTime":1288.165,"WaitTime":2046984.555,"ReceivedTime":111.6},
+]
+const sentBytesLog = [{"EndResponseTime":0,"Count":24000},
+{"EndResponseTime":1,"Count":36255},
+{"EndResponseTime":2,"Count":38205},
+{"EndResponseTime":3,"Count":40335},
+{"EndResponseTime":4,"Count":37635},
+{"EndResponseTime":5,"Count":41130},
+{"EndResponseTime":6,"Count":39900},
+{"EndResponseTime":7,"Count":39000},
+{"EndResponseTime":8,"Count":38670},
+{"EndResponseTime":9,"Count":40650},
+{"EndResponseTime":10,"Count":40665},
+{"EndResponseTime":11,"Count":39720},
+{"EndResponseTime":12,"Count":40050},
+{"EndResponseTime":13,"Count":39075},
+{"EndResponseTime":14,"Count":40605},
+{"EndResponseTime":15,"Count":41100},
+{"EndResponseTime":16,"Count":39240},
+{"EndResponseTime":17,"Count":40650},
+{"EndResponseTime":18,"Count":37200},
+{"EndResponseTime":19,"Count":39765},
+{"EndResponseTime":20,"Count":39630},
+{"EndResponseTime":21,"Count":38820},
+{"EndResponseTime":22,"Count":40530},
+{"EndResponseTime":23,"Count":38940},
+{"EndResponseTime":24,"Count":40020},
+{"EndResponseTime":25,"Count":39915},
+{"EndResponseTime":26,"Count":40365},
+{"EndResponseTime":27,"Count":38910},
+{"EndResponseTime":28,"Count":39285},
+{"EndResponseTime":29,"Count":40650},
+{"EndResponseTime":30,"Count":40530},
+{"EndResponseTime":31,"Count":37650},
+{"EndResponseTime":32,"Count":40575},
+{"EndResponseTime":33,"Count":39720},
+{"EndResponseTime":34,"Count":39810},
+{"EndResponseTime":35,"Count":40335},
+{"EndResponseTime":36,"Count":39330},
+{"EndResponseTime":37,"Count":42165},
+{"EndResponseTime":38,"Count":39375},
+{"EndResponseTime":39,"Count":40215},
+{"EndResponseTime":40,"Count":37875},
+{"EndResponseTime":41,"Count":40710},
+{"EndResponseTime":42,"Count":39870},
+{"EndResponseTime":43,"Count":40035},
+{"EndResponseTime":44,"Count":40140},
+{"EndResponseTime":45,"Count":39330},
+{"EndResponseTime":46,"Count":39180},
+{"EndResponseTime":47,"Count":40155},
+{"EndResponseTime":48,"Count":39165},
+{"EndResponseTime":49,"Count":40635},
+{"EndResponseTime":50,"Count":39285},
+{"EndResponseTime":51,"Count":40005},
+{"EndResponseTime":52,"Count":39390},
+{"EndResponseTime":53,"Count":40455},
+{"EndResponseTime":54,"Count":42060},
+{"EndResponseTime":55,"Count":39885},
+{"EndResponseTime":56,"Count":41205},
+{"EndResponseTime":57,"Count":41385},
+{"EndResponseTime":58,"Count":40425},
+{"EndResponseTime":59,"Count":41235},
+{"EndResponseTime":60,"Count":6000},
+]
+const receivedBytesLog = [{"EndResponseTime":0,"Count":35200},
+{"EndResponseTime":1,"Count":53174},
+{"EndResponseTime":2,"Count":56034},
+{"EndResponseTime":3,"Count":59158},
+{"EndResponseTime":4,"Count":55198},
+{"EndResponseTime":5,"Count":60324},
+{"EndResponseTime":6,"Count":58520},
+{"EndResponseTime":7,"Count":57200},
+{"EndResponseTime":8,"Count":56716},
+{"EndResponseTime":9,"Count":59620},
+{"EndResponseTime":10,"Count":59642},
+{"EndResponseTime":11,"Count":58256},
+{"EndResponseTime":12,"Count":58740},
+{"EndResponseTime":13,"Count":57310},
+{"EndResponseTime":14,"Count":59554},
+{"EndResponseTime":15,"Count":60280},
+{"EndResponseTime":16,"Count":57552},
+{"EndResponseTime":17,"Count":59620},
+{"EndResponseTime":18,"Count":54560},
+{"EndResponseTime":19,"Count":58322},
+{"EndResponseTime":20,"Count":58124},
+{"EndResponseTime":21,"Count":56936},
+{"EndResponseTime":22,"Count":59444},
+{"EndResponseTime":23,"Count":57112},
+{"EndResponseTime":24,"Count":58696},
+{"EndResponseTime":25,"Count":58542},
+{"EndResponseTime":26,"Count":59202},
+{"EndResponseTime":27,"Count":57068},
+{"EndResponseTime":28,"Count":57618},
+{"EndResponseTime":29,"Count":59620},
+{"EndResponseTime":30,"Count":59444},
+{"EndResponseTime":31,"Count":55220},
+{"EndResponseTime":32,"Count":59510},
+{"EndResponseTime":33,"Count":58256},
+{"EndResponseTime":34,"Count":58388},
+{"EndResponseTime":35,"Count":59158},
+{"EndResponseTime":36,"Count":57684},
+{"EndResponseTime":37,"Count":61842},
+{"EndResponseTime":38,"Count":57750},
+{"EndResponseTime":39,"Count":58982},
+{"EndResponseTime":40,"Count":55550},
+{"EndResponseTime":41,"Count":59708},
+{"EndResponseTime":42,"Count":58476},
+{"EndResponseTime":43,"Count":58718},
+{"EndResponseTime":44,"Count":58872},
+{"EndResponseTime":45,"Count":57684},
+{"EndResponseTime":46,"Count":57464},
+{"EndResponseTime":47,"Count":58894},
+{"EndResponseTime":48,"Count":57442},
+{"EndResponseTime":49,"Count":59598},
+{"EndResponseTime":50,"Count":57618},
+{"EndResponseTime":51,"Count":58674},
+{"EndResponseTime":52,"Count":57772},
+{"EndResponseTime":53,"Count":59334},
+{"EndResponseTime":54,"Count":61688},
+{"EndResponseTime":55,"Count":58498},
+{"EndResponseTime":56,"Count":60434},
+{"EndResponseTime":57,"Count":60698},
+{"EndResponseTime":58,"Count":59290},
+{"EndResponseTime":59,"Count":60478},
+{"EndResponseTime":60,"Count":8800},
+]
+</script>
+
+
+<script>
+function PlotlyJsLineDraw(chartName, plotlyIdent, plotlyData, rawData=true) {
+    let chartPlotData = []
+	if(rawData)
+	{
+		for(let key in plotlyData) {
+		chartPlotData.push({
+			x: plotlyData[key].map(item => item.x),
+			y: plotlyData[key].map(item => item.y),
+			type: 'scatter',
+			name: key,
+			})
+		}
+	}
+	else {
+		chartPlotData = plotlyData
+	}
+	
+
+	let chartLayout ={
+		showlegend: true,
+		legend: {
+			bgcolor: '#1A1A1A',
+			font: {
+				color: '#7C7C7C',
+				family: 'Open Sans',
+				size: 14
+			},
+			orientation: 'h',
+			y: -0.4
+		},
+		title: {
+			text: chartName,
+			font: {
+				color: '#828282',
+				family: 'Open Sans',
+				size: 21
+			},
+		},
+		xaxis: {
+			title: {
+				text: '',
+			},
+			gridcolor: '#3C3C3C',
+			gridwidth: 1,
+			tickfont : {
+				size : 11,
+				color : '#7C7C7C'
+			}
+		},
+		
+		yaxis: {
+			title: {
+				text: 'Milliseconds',
+				font: {
+					color: '#7C7C7C',
+					family: 'Open Sans',
+					size: 14
+				},
+			},
+			gridcolor: '#3C3C3C',
+			gridwidth: 1,
+		},
+		plot_bgcolor:'#1A1A1A',
+		paper_bgcolor:'#1A1A1A',
+	}
+	
+	
+	Plotly.newPlot(plotlyIdent, chartPlotData, chartLayout);
+}
+</script>
+
+
+<script>
+/*
+**
+*/
+let responseTimeData = {}
+for(let item of groupedRawLog) {
+	if (responseTimeData[item.User + ' ' + item.Request + ' ' + item.RequestLabel + ' ' + item.StatusCode] == undefined)
+    {
+        responseTimeData[item.User + ' ' + item.Request + ' ' + item.RequestLabel + ' ' + item.StatusCode] = []
+    }
+
+	let date = new Date(0);
+	date.setSeconds(item.EndResponseTime);
+	let timeString = date.toISOString().substr(11, 8);
+
+    responseTimeData[item.User + ' ' + item.Request + ' ' + item.RequestLabel + ' ' + item.StatusCode].push({ x: timeString, y: item.ResponseTime / 10000 })
+}
+
+PlotlyJsLineDraw('Response Time', 'ResponseTimeChart', responseTimeData)
+
+/*
+**
+*/
+let completedRequestsData = { };
+for (let item of groupedRawLog)
+{
+    if (completedRequestsData[item.User + ' ' + item.Request + ' ' + item.RequestLabel + ' ' + item.StatusCode] == undefined)
+    {
+        completedRequestsData[item.User + ' ' + item.Request + ' ' + item.RequestLabel + ' ' + item.StatusCode] = []
+    }
+
+	let date = new Date(0);
+	date.setSeconds(item.EndResponseTime);
+	let timeString = date.toISOString().substr(11, 8);
+
+    completedRequestsData[item.User + ' ' + item.Request + ' ' + item.RequestLabel + ' ' + item.StatusCode].push({ x: timeString, y: item.CompletedRequests })
+}
+
+PlotlyJsLineDraw('Completed Requests','CompletedRequestsChart', completedRequestsData)
+
+/*
+**
+*/
+let sentTimeData = { };
+for (let item of groupedRawLog)
+{
+    if (sentTimeData[item.User + ' ' + item.Request + ' ' + item.RequestLabel + ' ' + item.StatusCode] == undefined)
+    {
+        sentTimeData[item.User + ' ' + item.Request + ' ' + item.RequestLabel + ' ' + item.StatusCode] = []
+    }
+	let date = new Date(0);
+	date.setSeconds(item.EndResponseTime);
+	let timeString = date.toISOString().substr(11, 8);
+    sentTimeData[item.User + ' ' + item.Request + ' ' + item.RequestLabel + ' ' + item.StatusCode].push({ x: timeString, y: item.SentTime / 10000 })
+}
+
+PlotlyJsLineDraw('Data Timed Sending','SentTimeChart', sentTimeData)
+
+/*
+**
+*/
+let waitTimeData = { };
+for (let item of groupedRawLog)
+{
+    if (waitTimeData[item.User + ' ' + item.Request + ' ' + item.RequestLabel + ' ' + item.StatusCode] == undefined)
+    {
+        waitTimeData[item.User + ' ' + item.Request + ' ' + item.RequestLabel + ' ' + item.StatusCode] = []
+    }
+	let date = new Date(0);
+	date.setSeconds(item.EndResponseTime);
+	let timeString = date.toISOString().substr(11, 8);
+    waitTimeData[item.User + ' ' + item.Request + ' ' + item.RequestLabel + ' ' + item.StatusCode].push({ x: timeString, y: item.WaitTime / 10000 })
+}
+
+PlotlyJsLineDraw('Data Wait Times','WaitTimeChart', waitTimeData)
+
+/*
+**
+*/
+let receivedTimeData = { };
+for (let item of groupedRawLog)
+{
+    if (receivedTimeData[item.User + ' ' + item.Request + ' ' + item.RequestLabel + ' ' + item.StatusCode] == undefined)
+    {
+        receivedTimeData[item.User + ' ' + item.Request + ' ' + item.RequestLabel + ' ' + item.StatusCode] = []
+    }
+	let date = new Date(0);
+	date.setSeconds(item.EndResponseTime);
+	let timeString = date.toISOString().substr(11, 8);
+    receivedTimeData[item.User + ' ' + item.Request + ' ' + item.RequestLabel + ' ' + item.StatusCode].push({ x: timeString, y: item.ReceivedTime / 10000 })
+}
+
+PlotlyJsLineDraw('Data Timed Receiving','ReceivedTimeChart', receivedTimeData)
+
+/*
+**
+*/
+let sentBytesChartDataset = []
+sentBytesChartDataset.push({
+	x: sentBytesLog.map(item => {
+		let date = new Date(0);
+		date.setSeconds(item.EndResponseTime);
+		return date.toISOString().substr(11, 8);
+	}),
+	y: sentBytesLog.map(item => item.Count),
+	type: 'scatter'
+})
+
+PlotlyJsLineDraw('Sent Bytes','SentBytesChart', sentBytesChartDataset, false)
+
+/*
+**
+*/
+let receivedBytesChartDataset = []
+receivedBytesChartDataset.push({
+	x: receivedBytesLog.map(item => {
+		let date = new Date(0);
+		date.setSeconds(item.EndResponseTime);
+		return date.toISOString().substr(11, 8);
+	}),
+	y: receivedBytesLog.map(item => item.Count),
+	type: 'scatter'
+})
+
+PlotlyJsLineDraw('Received Bytes','ReceivedBytesChart', receivedBytesChartDataset, false)
+</script>
+
+</body>
+</html>
+
