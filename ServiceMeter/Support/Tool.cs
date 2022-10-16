@@ -29,11 +29,11 @@ namespace ServiceMeter.Support;
 
 public abstract class Tool : ITool
 {
-    protected readonly Reports? Reports = null;
+    protected readonly Watcher? Reports = null;
 
     protected readonly string UserName;
 
-    protected Tool(Reports? reports = null, string userName = "")
+    protected Tool(Watcher? reports = null, string userName = "")
     {
         this.Reports = reports;
         this.UserName = userName;

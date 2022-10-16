@@ -32,11 +32,11 @@ public abstract class HttpUser<TData> : BasicHttpUser, ITypedUser<TData>
         where TData : class
 {
     protected HttpUser(string address, 
-        Reports? reports = null, 
+        Watcher? watcher = null, 
         IDictionary<string, string>? httpHeaders = null,
         IEnumerable<Cookie>? httpCookies = null,
         string userName = "")
-        : base(address, reports, httpHeaders, httpCookies, userName)
+        : base(address, watcher, httpHeaders, httpCookies, userName)
     {
     }
 

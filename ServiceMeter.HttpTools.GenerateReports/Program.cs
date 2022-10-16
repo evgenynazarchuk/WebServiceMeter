@@ -6,6 +6,6 @@ public class Program
 {
     public static void Main()
     {
-        new HttpRequestReportBuilder("HttpServiceLogs.json", "HttpServiceReport.html").BuildHtml();
+        new HttpRequestHtmlReport("HttpServiceLogs.json", "HttpServiceReport.html").BuildHtml();
     }
 }

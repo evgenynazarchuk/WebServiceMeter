@@ -31,11 +31,11 @@ namespace ServiceMeter.HttpService.Users;
 public abstract class HttpUser : BasicHttpUser, ISimpleUser
 {
     protected HttpUser(string address, 
-        Reports? reports = null, 
+        Watcher? watcher = null, 
         IDictionary<string, string>? httpHeaders = null,
         IEnumerable<Cookie>? httpCookies = null,
         string userName = "")
-        : base(address, reports, httpHeaders, httpCookies, userName)
+        : base(address, watcher, httpHeaders, httpCookies, userName)
     {
     }
 

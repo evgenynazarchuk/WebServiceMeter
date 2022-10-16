@@ -38,7 +38,7 @@ public class ReportFile : Report
         this._logWriter = new StreamWriter(this.LogName, false, Encoding.UTF8, 65535);
     }
     
-    public override Task StartProcessAsync()
+    public override Task StartReportProcessAsync()
     {
         var processWrite = Task.Run(async () =>
         {
@@ -46,7 +46,7 @@ public class ReportFile : Report
             {
                 if (this.Token.IsCancellationRequested && this.LogsQueue.IsEmpty)
                 {
-                    await this.StopProcessAsync();
+                    await this.FlushAndCloseReportAsync();
                     break;
                 }
                 
@@ -60,7 +60,7 @@ public class ReportFile : Report
         return processWrite;
     }
 
-    private async Task StopProcessAsync()
+    private async Task FlushAndCloseReportAsync()
     {
         await this._logWriter.FlushAsync();
         this._logWriter.Close();

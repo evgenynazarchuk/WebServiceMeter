@@ -38,9 +38,7 @@ public abstract class Report : IReport
     protected readonly string LogName;
     
     private readonly CancellationTokenSource _tokenSource;
-    
-    public abstract Task StartProcessAsync();
-    
+
     protected Report(string logName)
     {
         this.LogName = logName;
@@ -48,13 +46,15 @@ public abstract class Report : IReport
         this._tokenSource = new CancellationTokenSource();
         this.Token = this._tokenSource.Token;
     }
+    
+    public abstract Task StartReportProcessAsync();
 
-    public virtual void StopProcess()
+    public void StopReportProcess()
     {
         this._tokenSource.Cancel();
     }
 
-    public virtual void SendMessage(string logMessage)
+    public void SendMessage(string logMessage)
     {
         this.LogsQueue.Enqueue(logMessage);
     }

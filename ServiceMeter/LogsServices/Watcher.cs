@@ -28,19 +28,19 @@ using ServiceMeter.Interfaces;
 
 namespace ServiceMeter.LogsServices;
 
-public class Reports
+public class Watcher
 {
     private readonly List<IReport> _reports;
 
-    private readonly List<Task> _reportTask;
+    private readonly List<Task> _reportsProcesses;
 
-    public Reports()
+    private Watcher()
     {
         this._reports = new List<IReport>();
-        this._reportTask = new List<Task>();
+        this._reportsProcesses = new List<Task>();
     }
 
-    public Reports(params IReport[] reports)
+    public Watcher(params IReport[] reports)
         : this()
     {
         foreach (var report in reports)
@@ -54,11 +54,6 @@ public class Reports
         this._reports.Add(report);
     }
 
-    public void ClearReports()
-    {
-        this._reports.Clear();
-    }
-
     public void SendMessage(string logMessage)
     {
         foreach (var report in this._reports)
@@ -67,21 +62,26 @@ public class Reports
         }
     }
 
-    public void StartProcess()
+    public void StartAllReportsProcesses()
     {
         this._reports.ForEach(report =>
         {
-            this._reportTask.Add(report.StartProcessAsync());
+            this._reportsProcesses.Add(report.StartReportProcessAsync());
         });
     }
 
-    public void StopProcess()
+    public void StopAllReportsProcesses()
     {
         foreach (var report in this._reports)
         {
-            report.StopProcess();
+            report.StopReportProcess();
         }
 
-        Task.WaitAll(this._reportTask.ToArray());
+        this.WaitReportsProcesses();
+    }
+
+    private void WaitReportsProcesses()
+    {
+        Task.WaitAll(this._reportsProcesses.ToArray());
     }
 }

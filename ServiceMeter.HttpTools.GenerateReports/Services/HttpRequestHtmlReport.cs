@@ -29,12 +29,12 @@ using ServiceMeter.HttpTools.GenerateReports.Models;
 
 namespace ServiceMeter.HttpTools.GenerateReports.Services;
 
-public class HttpRequestReportBuilder : HtmlGenerator<HttpLogMessage>
+public class HttpRequestHtmlReport : HtmlGenerator<HttpLogMessage>
 {
-    public HttpRequestReportBuilder(
-        string sourceJsonFilePath,
-        string destinationJsonFilePath)
-        : base(sourceJsonFilePath, destinationJsonFilePath) { }
+    public HttpRequestHtmlReport(
+        string sourceJsonPath,
+        string resultHtmlPath)
+        : base(sourceJsonPath, resultHtmlPath) { }
 
     protected override string GenerateHtml(List<HttpLogMessage> logs)
     {

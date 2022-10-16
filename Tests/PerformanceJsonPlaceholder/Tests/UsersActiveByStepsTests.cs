@@ -14,18 +14,17 @@ public class UsersActiveByStepsTests
     [PerformanceTest]
     public void Test1()
     {
-        var url = "https://jsonplaceholder.typicode.com";
-        var jsonLog = "HttpServiceLog.txt";
-        var htmlReport = "HttpServiceReport.html";
+        const string url = "https://jsonplaceholder.typicode.com";
+        const string json = "HttpServiceLog.txt";
+        const string html = "HttpServiceReport.html";
         
-        var fileReport = new ReportFile(jsonLog);
-        var reports = new Reports(fileReport);
-
-        reports.StartProcess();
-
+        var reportFile = new ReportFile(json);
+        var reportConsole = new ReportConsole("LOG");
+        var watcher = new Watcher(reportFile, reportConsole);
+        
         var user = new TestUser1(
             address: url, 
-            reports: reports, 
+            watcher: watcher, 
             userName: "Test User");
         
         //
@@ -36,10 +35,15 @@ public class UsersActiveByStepsTests
             usersStep: 5,
             performancePlanDuration: 10.Seconds());
         
-        new Scenario().AddSequentialPlans(plan).StartAsync().Wait();
+        new Scenario()
+            .AddWatchers(watcher)
+            .AddSequentialPlans(plan)
+            .StartAsync()
+            .Wait();
         
-        reports.StopProcess();
-        
-        new HttpRequestReportBuilder(jsonLog, htmlReport).BuildHtml();
+        new HttpRequestHtmlReport(
+                sourceJsonPath: json, 
+                resultHtmlPath: html)
+            .BuildHtml();
     }
 }

@@ -37,7 +37,7 @@ public partial class HttpTool : Tool
 
     public HttpTool(
         string baseAddress,
-        Reports? reports = null,
+        Watcher? reports = null,
         IDictionary<string, string>? httpHeaders = null,
         IEnumerable<Cookie>? httpCookies = null,
         string userName = "")

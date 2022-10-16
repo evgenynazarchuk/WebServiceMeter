@@ -35,13 +35,13 @@ public abstract partial class BasicHttpUser : User
     
     protected BasicHttpUser(
         string address, 
-        Reports? reports = null, 
+        Watcher? watcher = null, 
         IDictionary<string, string>? httpHeaders = null,
         IEnumerable<Cookie>? httpCookies = null,
         string userName = "")
-        : base(reports)
+        : base(watcher)
     {
-        this._httpTool = new HttpTool(address, this.Reports, httpHeaders, httpCookies, userName);
+        this._httpTool = new HttpTool(address, this.Watcher, httpHeaders, httpCookies, userName);
     }
 
     protected static async Task RunParallel(params Task[] actions)

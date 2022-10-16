@@ -38,10 +38,10 @@ public abstract class HtmlGenerator<TLog>
     private readonly StreamWriter _writer;
     
     protected HtmlGenerator(
-        string sourceJsonFile,
+        string sourceJsonPath,
         string resultHtmlFile)
     {
-        this._reader = new StreamReader(sourceJsonFile, Encoding.UTF8, false, 65535);
+        this._reader = new StreamReader(sourceJsonPath, Encoding.UTF8, false, 65535);
         this._writer = new StreamWriter(resultHtmlFile, false, Encoding.UTF8, 65355);
     }
 

@@ -26,18 +26,43 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 using ServiceMeter.PerformancePlans.Basic;
+using ServiceMeter.LogsServices;
 
 namespace ServiceMeter.Support;
 
 public sealed class Scenario
 {
     private readonly List<KeyValuePair<ActType, List<PerformancePlan>>> _acts;
+
+    private readonly List<Watcher> _watchers = new();
     
     public Scenario()
     {
         this._acts = new List<KeyValuePair<ActType, List<PerformancePlan>>>();
     }
-    
+
+    public Scenario AddWatchers(params Watcher[] watchers)
+    {
+        this._watchers.AddRange(watchers);
+        return this;
+    }
+
+    private void StartAllReports()
+    {
+        foreach (var watcher in this._watchers)
+        {
+            watcher.StartAllReportsProcesses();
+        }
+    }
+
+    private void StopAllReports()
+    {
+        foreach (var watcher in this._watchers)
+        {
+            watcher.StopAllReportsProcesses();
+        }
+    }
+
     private Scenario AddActs(ActType launchType, params PerformancePlan[] performancePlan)
     {
         this._acts.Add(new KeyValuePair<ActType, List<PerformancePlan>>(launchType, performancePlan.ToList()));
@@ -58,6 +83,8 @@ public sealed class Scenario
 
     public async Task StartAsync()
     {
+        this.StartAllReports();
+            
         ScenarioTimer.Time.Start();
 
         foreach (var (launchActType, performancePlans) in this._acts)
@@ -87,5 +114,7 @@ public sealed class Scenario
         }
 
         ScenarioTimer.Time.Stop();
+        
+        this.StopAllReports();
     }
 }

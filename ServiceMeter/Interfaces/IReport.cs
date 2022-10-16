@@ -28,9 +28,9 @@ namespace ServiceMeter.Interfaces;
 
 public interface IReport
 {
-    Task StartProcessAsync();
+    Task StartReportProcessAsync();
 
-    void StopProcess();
+    void StopReportProcess();
 
     void SendMessage(string logMessage);
 }

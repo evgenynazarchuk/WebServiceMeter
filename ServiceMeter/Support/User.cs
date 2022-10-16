@@ -31,13 +31,13 @@ namespace ServiceMeter.Support;
 
 public abstract class User : IUser
 {
-    protected readonly Reports? Reports = null;
+    protected readonly Watcher? Watcher = null;
 
     //private List<Task>? _reportsProcess;
 
-    protected User(Reports? reports = null)
+    protected User(Watcher? watcher = null)
     {
-        this.Reports = reports;
+        this.Watcher = watcher;
     }
 
     //public void StartReportProcess()
