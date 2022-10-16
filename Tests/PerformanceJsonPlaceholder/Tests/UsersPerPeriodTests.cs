@@ -18,18 +18,18 @@ public class UsersPerPeriodTests
         const string json = "HttpServiceLog.txt";
         const string html = "HttpServiceReport.html";
         
-        var reportFile = new ReportFile(json);
+        var reportFile = new HttpReportFile(json);
         var reportConsole = new ReportConsole("LOG");
-        var watcher = new Watcher(reportFile, reportConsole);
+        var watcher = new HttpWatcher(reportFile, reportConsole);
 
-        var user = new TestUser1(
+        var user = new SimpleHttpUser(
             address: url, 
             watcher: watcher, 
             userName: "Test User");
         
         // Каждую секунду запускать 10 пользователей на протяжении 10 секунд
         var plan = new UsersPerPeriod(
-            user, 
+            user: user, 
             usersCountPerPeriod: 10, 
             performancePlanDuration: 10.Seconds(),
             perPeriod: 1.Seconds());

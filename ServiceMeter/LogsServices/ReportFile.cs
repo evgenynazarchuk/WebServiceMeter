@@ -28,11 +28,11 @@ using System.Threading.Tasks;
 
 namespace ServiceMeter.LogsServices;
 
-public class ReportFile : Report
+public abstract class ReportFile : Report
 {
     private readonly StreamWriter _logWriter;
 
-    public ReportFile(string logName)
+    protected ReportFile(string logName)
         : base(logName)
     {
         this._logWriter = new StreamWriter(this.LogName, false, Encoding.UTF8, 65535);

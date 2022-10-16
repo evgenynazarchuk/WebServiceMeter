@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
+using ServiceMeter.Interfaces;
 
 namespace ServiceMeter.LogsServices;
 
-public class ReportConsole : Report
+public class ReportConsole : Report, IHttpReport, IGrpcReport, IWebSocketReport
 {
     public ReportConsole(string logName)
         : base(logName)

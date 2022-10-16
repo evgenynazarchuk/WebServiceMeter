@@ -23,6 +23,7 @@
  */
 
 using System.Net;
+using ServiceMeter.Interfaces;
 using ServiceMeter.Support;
 using ServiceMeter.HttpService.Tools;
 using ServiceMeter.LogsServices;
@@ -35,13 +36,12 @@ public abstract partial class BasicHttpUser : User
     
     protected BasicHttpUser(
         string address, 
-        Watcher? watcher = null, 
+        IHttpWatcher? watcher = null, 
         IDictionary<string, string>? httpHeaders = null,
         IEnumerable<Cookie>? httpCookies = null,
         string userName = "")
-        : base(watcher)
     {
-        this._httpTool = new HttpTool(address, this.Watcher, httpHeaders, httpCookies, userName);
+        this._httpTool = new HttpTool(address, watcher, httpHeaders, httpCookies, userName);
     }
 
     protected static async Task RunParallel(params Task[] actions)

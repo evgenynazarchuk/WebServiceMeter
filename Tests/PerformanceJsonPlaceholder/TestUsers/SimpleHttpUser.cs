@@ -1,18 +1,13 @@
-﻿using System;
-using ServiceMeter;
-using ServiceMeter.Support;
-using ServiceMeter.HttpService;
-using ServiceMeter.HttpTools;
-using System.Net;
-using ServiceMeter.LogsServices;
+﻿using System.Net;
 using ServiceMeter.HttpService.Users;
+using ServiceMeter.Interfaces;
 
 namespace PerformanceJsonPlaceholder.TestUsers;
 
-public class TestUser1 : HttpUser
+public class SimpleHttpUser : HttpUser
 {
-    public TestUser1(string address, 
-        Watcher? watcher = null, 
+    public SimpleHttpUser(string address, 
+        IHttpWatcher? watcher = null, 
         IDictionary<string,string>? httpHeaders = null, 
         IEnumerable<Cookie>? httpCookies = null, 
         string userName = "")

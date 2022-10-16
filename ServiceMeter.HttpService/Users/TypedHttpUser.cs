@@ -32,7 +32,7 @@ public abstract class HttpUser<TData> : BasicHttpUser, ITypedUser<TData>
         where TData : class
 {
     protected HttpUser(string address, 
-        Watcher? watcher = null, 
+        IHttpWatcher? watcher = null, 
         IDictionary<string, string>? httpHeaders = null,
         IEnumerable<Cookie>? httpCookies = null,
         string userName = "")

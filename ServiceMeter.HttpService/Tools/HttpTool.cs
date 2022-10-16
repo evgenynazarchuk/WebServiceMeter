@@ -25,8 +25,8 @@
 using System.Net;
 using ServiceMeter.Support;
 using ServiceMeter.Extensions;
+using ServiceMeter.Interfaces;
 using ServiceMeter.HttpService.Models;
-using ServiceMeter.LogsServices;
 using System.Text.Json;
 
 namespace ServiceMeter.HttpService.Tools;
@@ -37,11 +37,11 @@ public partial class HttpTool : Tool
 
     public HttpTool(
         string baseAddress,
-        Watcher? reports = null,
+        IHttpWatcher? watcher = null,
         IDictionary<string, string>? httpHeaders = null,
         IEnumerable<Cookie>? httpCookies = null,
         string userName = "")
-        : base(reports, userName)
+        : base(watcher, userName)
     {
         var handler = new HttpClientHandler()
         {
@@ -110,7 +110,7 @@ public partial class HttpTool : Tool
         
         var logJson = JsonSerializer.Serialize(httpLogMessage);
         
-        this.Reports?.SendMessage(logMessage: logJson);
+        this.Watcher?.SendMessage(logMessage: logJson);
 
         var response = new HttpResponse(
             statusCode: (int)httpResponseMessage.StatusCode,

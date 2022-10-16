@@ -31,7 +31,7 @@ namespace ServiceMeter.HttpService.Users;
 public abstract class HttpUser : BasicHttpUser, ISimpleUser
 {
     protected HttpUser(string address, 
-        Watcher? watcher = null, 
+        IHttpWatcher? watcher = null, 
         IDictionary<string, string>? httpHeaders = null,
         IEnumerable<Cookie>? httpCookies = null,
         string userName = "")

@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using ServiceMeter.Interfaces;
 using ServiceMeter.LogsServices;
 
@@ -31,27 +29,7 @@ namespace ServiceMeter.Support;
 
 public abstract class User : IUser
 {
-    protected readonly Watcher? Watcher = null;
-
-    //private List<Task>? _reportsProcess;
-
-    protected User(Watcher? watcher = null)
+    protected User()
     {
-        this.Watcher = watcher;
     }
-
-    //public void StartReportProcess()
-    //{
-    //    this._reportsProcess = this.Reports?.StartProcess();
-    //}
-    //
-    //public async Task StopReportProcessAsync()
-    //{
-    //    this.Reports?.StopProcess();
-    //
-    //    if (this._reportsProcess is not null)
-    //    {
-    //        await Task.WhenAll(this._reportsProcess.ToArray());
-    //    }
-    //}
 }

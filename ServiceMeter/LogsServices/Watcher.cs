@@ -28,30 +28,18 @@ using ServiceMeter.Interfaces;
 
 namespace ServiceMeter.LogsServices;
 
-public class Watcher
+public abstract class Watcher : IWatcher
 {
-    private readonly List<IReport> _reports;
+    private readonly List<IReport> _reports = new();
 
-    private readonly List<Task> _reportsProcesses;
+    private readonly List<Task> _reportsProcesses = new();
 
-    private Watcher()
-    {
-        this._reports = new List<IReport>();
-        this._reportsProcesses = new List<Task>();
-    }
-
-    public Watcher(params IReport[] reports)
-        : this()
+    protected Watcher(params IReport[] reports)
     {
         foreach (var report in reports)
         {
             this._reports.Add(report);
         }
-    }
-
-    public void AddReport(IReport report)
-    {
-        this._reports.Add(report);
     }
 
     public void SendMessage(string logMessage)
