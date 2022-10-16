@@ -26,108 +26,117 @@ using System;
 using System.Threading.Tasks;
 using System.Timers;
 using ServiceMeter.Interfaces;
+using ServiceMeter.Extensions;
 
-namespace ServiceMeter.PerformancePlans;
+namespace ServiceMeter.PerformancePlans.Basic;
 
-public abstract class BasicUsersOnPeriod : UsersPerformancePlan
+public abstract class BasicUsersOnPeriod : PerformancePlan
 {
-    public BasicUsersOnPeriod(
-        IBasicUser user,
+    private readonly int _totalUsers;
+
+    private readonly TimeSpan _userPerformancePlanDuration;
+
+    private readonly Task[] _invokedUsers;
+
+    private readonly int _usersCount;
+
+    private readonly int _interval;
+
+    private readonly Timer _timer;
+
+    private readonly TimeSpan _minimalInvokePeriod;
+
+    private int _currentInvoke;
+    
+    protected BasicUsersOnPeriod(
+        IUser user,
         int totalUsers,
         TimeSpan performancePlanDuration,
-        TimeSpan? minimalInvokePeriod = null,
-        int userLoopCount = 1)
+        TimeSpan? minimalInvokePeriod = null)
         : base(user)
     {
-        this.totalUsers = totalUsers;
-        this.userPerformancePlanDuration = performancePlanDuration;
-        this.invokedUsers = new Task[this.totalUsers];
-        this.currentInvoke = 0;
-        this.minimalInvokePeriod = minimalInvokePeriod ?? 1000.Milliseconds();
-        this.CalculateUserCountOnInterval(ref this.usersCount, ref this.interval);
+        this._totalUsers = totalUsers;
+        
+        this._userPerformancePlanDuration = performancePlanDuration;
+        
+        this._invokedUsers = new Task[this._totalUsers];
+        
+        this._currentInvoke = 0;
+        
+        this._minimalInvokePeriod = minimalInvokePeriod ?? 1000.Milliseconds();
+        
+        this.CalculateUserCountOnInterval(ref this._usersCount, ref this._interval);
 
-        this.runner = new Timer(this.interval);
-        this.runner.Elapsed += (sender, e) => this.InvokeUsers();
-
-        this.userLoopCount = userLoopCount;
+        this._timer = new Timer(this._interval);
+        
+        this._timer.Elapsed += (sender, e) => this.InvokeUsers();
     }
 
     public override async Task StartAsync()
     {
-        this.runner.Start();
-        await this.WaitPerformancePlanTerminationAsync();
-        this.runner.Stop();
-        this.runner.Close();
+        this._timer.Start();
+        
+        await this.WaitFinishPerformancePlan();
+        
+        this._timer.Stop();
+        
+        this._timer.Close();
 
         await this.WaitUserTerminationAsync();
     }
 
-    public void InvokeUsers()
+    private void InvokeUsers()
     {
-        if (this.currentInvoke == this.totalUsers)
-            return;
-
-        for (int i = 0; i < this.usersCount; i++)
+        if (this._currentInvoke == this._totalUsers)
         {
-            this.invokedUsers[this.currentInvoke] = this.StartUserAsync();
-            this.currentInvoke++;
+            return;
+        }
+
+        for (var i = 0; i < this._usersCount; i++)
+        {
+            this._invokedUsers[this._currentInvoke] = this.StartUserAsync();
+            this._currentInvoke++;
         }
     }
-
-    protected abstract Task StartUserAsync();
 
     private void CalculateUserCountOnInterval(ref int userCount, ref int interval)
     {
         interval = 1;
         userCount = 1;
 
-        if (this.userPerformancePlanDuration.TotalMilliseconds > this.totalUsers)
+        if (this._userPerformancePlanDuration.TotalMilliseconds > this._totalUsers)
         {
-            interval = (int)this.userPerformancePlanDuration.TotalMilliseconds / totalUsers;
+            interval = (int)this._userPerformancePlanDuration.TotalMilliseconds / _totalUsers;
         }
         else
         {
-            userCount = this.totalUsers / (int)this.userPerformancePlanDuration.TotalMilliseconds;
+            userCount = this._totalUsers / (int)this._userPerformancePlanDuration.TotalMilliseconds;
         }
 
-        if (interval < this.minimalInvokePeriod.TotalMilliseconds)
+        if (interval < this._minimalInvokePeriod.TotalMilliseconds)
         {
-            userCount *= (int)this.minimalInvokePeriod.TotalMilliseconds / this.interval;
-            interval = (int)this.minimalInvokePeriod.TotalMilliseconds;
+            userCount *= (int)this._minimalInvokePeriod.TotalMilliseconds / this._interval;
+            interval = (int)this._minimalInvokePeriod.TotalMilliseconds;
         }
     }
 
     private async Task WaitUserTerminationAsync()
     {
-        foreach (var user in this.invokedUsers)
+        foreach (var user in this._invokedUsers)
         {
             if (user is not null)
             {
                 await user;
             }
         }
+
+        // ???
+        //Task.WaitAll(_invokedUsers);
+        //await Task.WhenAll(this._invokedUsers);
     }
 
-    private async Task WaitPerformancePlanTerminationAsync()
+    private async Task WaitFinishPerformancePlan()
     {
-        await Task.Delay(this.userPerformancePlanDuration + 500.Milliseconds());
+        await Task.Delay(this._userPerformancePlanDuration + 500.Milliseconds());
     }
-
-    protected readonly int totalUsers;
-
-    protected readonly TimeSpan userPerformancePlanDuration;
-
-    protected readonly Task[] invokedUsers;
-
-    protected readonly int usersCount;
-
-    protected readonly int interval;
-
-    protected readonly Timer runner;
-
-    protected readonly TimeSpan minimalInvokePeriod;
-
-    protected int currentInvoke;
-
-    protected readonly int userLoopCount;
 }

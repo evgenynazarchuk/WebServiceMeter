@@ -26,7 +26,7 @@ using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace ServiceMeter;
+namespace ServiceMeter.Extensions;
 
 public static class XmlExtension
 {
@@ -36,8 +36,11 @@ public static class XmlExtension
         where T : class
     {
         var namespaces = new XmlSerializerNamespaces(new[] { XmlQualifiedName.Empty });
+        
         var serializer = new XmlSerializer(typeof(T));
+        
         using var stringWriter = new StringWriter();
+        
         using var xmlWriter = XmlWriter.Create(stringWriter, xmlSettings);
 
         serializer.Serialize(xmlWriter, value, namespaces);
@@ -49,7 +52,9 @@ public static class XmlExtension
         where T : class
     {
         using var reader = new StringReader(value);
+        
         var serializer = new XmlSerializer(typeof(T));
+        
         return serializer.Deserialize(reader) as T;
     }
 }

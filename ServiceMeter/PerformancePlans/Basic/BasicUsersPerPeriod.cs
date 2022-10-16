@@ -26,87 +26,89 @@ using System;
 using System.Threading.Tasks;
 using System.Timers;
 using ServiceMeter.Interfaces;
+using ServiceMeter.Extensions;
 
-namespace ServiceMeter.PerformancePlans;
+namespace ServiceMeter.PerformancePlans.Basic;
 
-public abstract class BasicUsersPerPeriod : UsersPerformancePlan
+public abstract class BasicUsersPerPeriod : PerformancePlan
 {
-    public BasicUsersPerPeriod(
-        IBasicUser user,
+    private readonly int _totalUsersPerPeriod;
+
+    private readonly TimeSpan _performancePlanDuration;
+
+    private readonly Task[,] _invokedUsers;
+
+    private readonly int _sizePeriodBuffer;
+
+    private readonly Timer _timer;
+
+    private int _currentPeriod;
+    
+    protected BasicUsersPerPeriod(
+        IUser user,
         int usersCountPerPeriod,
         TimeSpan performancePlanDuration,
         TimeSpan? perPeriod = null,
-        int sizePeriodBuffer = 60,
-        int userLoopCount = 1)
+        int sizePeriodBuffer = 60)
         : base(user)
     {
-        this.totalUsersPerPeriod = usersCountPerPeriod;
-        this.performancePlanDuration = performancePlanDuration;
-        this.sizePeriodBuffer = sizePeriodBuffer;
-        this.currentPeriod = 0;
-        this.invokedUsers = new Task[sizePeriodBuffer, usersCountPerPeriod];
-        this.perPeriod = perPeriod is null ? 1.Seconds() : perPeriod.Value;
+        this._totalUsersPerPeriod = usersCountPerPeriod;
+        
+        this._performancePlanDuration = performancePlanDuration;
+        
+        this._sizePeriodBuffer = sizePeriodBuffer;
+        
+        this._currentPeriod = 0;
+        
+        this._invokedUsers = new Task[sizePeriodBuffer, usersCountPerPeriod];
 
-        this.runner = new Timer(this.perPeriod.TotalMilliseconds);
-        this.runner.Elapsed += (sender, e) => this.InvokeUsers();
+        var period = perPeriod ?? 1.Seconds();
 
-        this.userLoopCount = userLoopCount;
+        this._timer = new Timer(period.TotalMilliseconds);
+        
+        this._timer.Elapsed += (sender, e) => this.InvokeUsers();
     }
-
+    
     public override async Task StartAsync()
     {
-        this.runner.Start();
-        await this.WaitTerminationPerformancePlanAsync();
-        this.runner.Stop();
-        this.runner.Close();
-        await this.WaitUserTerminationAsync();
+        this._timer.Start();
+        
+        await this.WaitFinishPerformancePlan();
+        
+        this._timer.Stop();
+        
+        this._timer.Close();
+        
+        await this.WaitFinishUser();
     }
-
-    protected abstract Task StartUserAsync();
 
     private void InvokeUsers()
     {
-        for (var i = 0; i < this.totalUsersPerPeriod; i++)
+        for (var i = 0; i < this._totalUsersPerPeriod; i++)
         {
-            this.invokedUsers[this.currentPeriod, i] = this.StartUserAsync();
+            this._invokedUsers[this._currentPeriod, i] = this.StartUserAsync();
         }
 
         this.IncrementPeriod();
     }
 
-    private async Task WaitUserTerminationAsync()
+    private async Task WaitFinishUser()
     {
-        await this.invokedUsers.Wait(this.sizePeriodBuffer, this.totalUsersPerPeriod);
+        await this._invokedUsers.Wait(this._sizePeriodBuffer, this._totalUsersPerPeriod);
     }
 
-    private async Task WaitTerminationPerformancePlanAsync()
+    private async Task WaitFinishPerformancePlan()
     {
-        await Task.Delay(this.performancePlanDuration + 900.Milliseconds());
+        await Task.Delay(this._performancePlanDuration + 900.Milliseconds());
     }
 
     private void IncrementPeriod()
     {
-        this.currentPeriod++;
+        this._currentPeriod++;
 
-        if (this.currentPeriod == this.sizePeriodBuffer)
+        if (this._currentPeriod == this._sizePeriodBuffer)
         {
-            this.currentPeriod = 0;
+            this._currentPeriod = 0;
         }
     }
-
-    protected readonly int totalUsersPerPeriod;
-
-    protected readonly TimeSpan perPeriod;
-
-    protected readonly TimeSpan performancePlanDuration;
-
-    protected readonly Task[,] invokedUsers;
-
-    protected readonly int sizePeriodBuffer;
-
-    protected readonly Timer runner;
-
-    protected int currentPeriod;
-
-    protected readonly int userLoopCount;
 }

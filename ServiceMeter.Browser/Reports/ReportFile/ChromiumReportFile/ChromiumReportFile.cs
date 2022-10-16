@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-using ServiceMeter.DataReader;
+using ServiceMeter.HttpTools.Tools.HttpTool.DataReader;
 
-namespace ServiceMeter.Reports;
+namespace ServiceMeter.HttpTools.Tools.HttpTool.Reports;
 
 public class ChromiumReportFile : ReportFile
 {

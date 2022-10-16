@@ -24,8 +24,9 @@
 
 using System.Reflection;
 using System.Text;
+using ServiceMeter.Runner.Attributes;
 
-namespace ServiceMeter.Runner;
+namespace ServiceMeter.Runner.Runner;
 
 public class ConsoleRunner
 {
@@ -39,10 +40,10 @@ public class ConsoleRunner
 
         var assemblyTypes = assembly.GetTypes()
             .Where(x => x.GetCustomAttributes()
-            .Any(x => x is PerformanceTestClassAttribute))
+            .Any(y => y is PerformanceTestClassAttribute))
             .ToList();
 
-        int testNumber = 1;
+        var testNumber = 1;
 
         foreach (var assemblyType in assemblyTypes)
         {

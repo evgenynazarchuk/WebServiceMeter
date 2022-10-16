@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-namespace ServiceMeter.Runner;
+namespace ServiceMeter.Runner.Runner.TestRunnerWebService.DTOs;
 
 public class StartTestMethodDto : TestMethodIdentityDto
 {

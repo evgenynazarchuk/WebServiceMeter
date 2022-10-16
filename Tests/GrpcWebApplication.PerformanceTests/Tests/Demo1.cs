@@ -24,7 +24,7 @@
 
 using GrpcWebApplication.PerformanceTests.Users;
 using System.Threading.Tasks;
-using ServiceMeter;
+using ServiceMeter.HttpService.Tools.HttpTool;
 
 namespace GrpcWebApplication.PerformanceTests.Tests;
 

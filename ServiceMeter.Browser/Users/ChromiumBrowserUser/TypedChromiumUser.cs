@@ -22,12 +22,12 @@
  * SOFTWARE.
  */
 
-using ServiceMeter.Interfaces;
-using ServiceMeter.Reports;
-using ServiceMeter.Tools;
-using ServiceMeter.Users;
+using ServiceMeter.HttpTools.Tools.HttpTool.Interfaces;
+using ServiceMeter.HttpTools.Tools.HttpTool.Tools;
+using ServiceMeter.HttpTools.Tools.HttpTool.Users;
+using ServiceMeter.HttpTools.Tools.HttpTool.Reports;
 
-namespace ServiceMeter;
+namespace ServiceMeter.HttpTools.Tools.HttpTool;
 
 public abstract partial class ChromiumUser<TData> : BasicChromiumUser, ITypedUser<TData>, IDisposable
         where TData : class

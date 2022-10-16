@@ -24,17 +24,15 @@
 
 using System;
 using System.Threading.Tasks;
+using ServiceMeter.PerformancePlans.Basic;
 using ServiceMeter.Interfaces;
-using ServiceMeter.PerformancePlans;
 
-namespace ServiceMeter;
+namespace ServiceMeter.PerformancePlans;
 
 public sealed class UsersPerPeriod<TData> : BasicUsersPerPeriod
         where TData : class
 {
     private readonly IDataReader<TData> _dataReader;
-
-    private readonly bool _reuseDataInLoop;
 
     public UsersPerPeriod(
         ITypedUser<TData> user,
@@ -42,22 +40,25 @@ public sealed class UsersPerPeriod<TData> : BasicUsersPerPeriod
         TimeSpan performancePlanDuration,
         IDataReader<TData> dataReader,
         TimeSpan? perPeriod = null,
-        int sizePeriodBuffer = 60,
-        int userLoopCount = 1,
-        bool reuseDataInLoop = true)
+        int sizePeriodBuffer = 60)
         : base(user,
               usersCountPerPeriod,
               performancePlanDuration,
               perPeriod,
-              sizePeriodBuffer,
-              userLoopCount)
+              sizePeriodBuffer)
     {
         this._dataReader = dataReader;
-        this._reuseDataInLoop = reuseDataInLoop;
     }
 
     protected override Task StartUserAsync()
     {
-        return ((ITypedUser<TData>)this.User).InvokeAsync(this._dataReader, this._reuseDataInLoop, this.userLoopCount);
+        var data = this._dataReader.GetData();
+
+        if (data is null)
+        {
+            return Task.CompletedTask;
+        }
+        
+        return ((ITypedUser<TData>)this.User).StartAsync(data);
     }
 }

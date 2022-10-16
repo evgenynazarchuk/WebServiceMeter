@@ -22,147 +22,70 @@
  * SOFTWARE.
  */
 
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using ServiceMeter.Reports;
-using ServiceMeter.Support;
-using ServiceMeter.Users;
+using System.Linq;
+using ServiceMeter.PerformancePlans.Basic;
 
-namespace ServiceMeter;
+namespace ServiceMeter.Support;
 
 public sealed class Scenario
 {
-    public Scenario(string projectName = "", string testRunId = "")
+    private readonly List<KeyValuePair<ActType, List<PerformancePlan>>> _acts;
+    
+    public Scenario()
     {
-        this._projectName = projectName;
-        this._testRunId = testRunId;
-        this._acts = new();
-        this._reports = new();
+        this._acts = new List<KeyValuePair<ActType, List<PerformancePlan>>>();
+    }
+    
+    private Scenario AddActs(ActType launchType, params PerformancePlan[] performancePlan)
+    {
+        this._acts.Add(new KeyValuePair<ActType, List<PerformancePlan>>(launchType, performancePlan.ToList()));
+        return this;
     }
 
-    public Scenario AddParallelPlans(params UsersPerformancePlan[] performancePlan)
+    public Scenario AddParallelPlans(params PerformancePlan[] performancePlan)
     {
         this.AddActs(ActType.Parallel, performancePlan);
-
         return this;
     }
 
-    public Scenario AddSequentialPlans(params UsersPerformancePlan[] performancePlan)
+    public Scenario AddSequentialPlans(params PerformancePlan[] performancePlan)
     {
         this.AddActs(ActType.Sequential, performancePlan);
-
         return this;
     }
 
-    public async Task Start()
+    public async Task StartAsync()
     {
-        this.StartWatcher();
-
         ScenarioTimer.Time.Start();
 
-        foreach (var (launchType, plans) in this._acts)
+        foreach (var (launchActType, performancePlans) in this._acts)
         {
-            switch (launchType)
+            if (launchActType == ActType.Parallel)
             {
-                case ActType.Parallel:
-
-                    var tasks = new List<Task>();
-
-                    foreach (var plan in plans)
-                    {
-                        tasks.Add(Task.Run(async () =>
-                        {
-                            await plan.StartAsync();
-                        }));
-                    }
-
-                    await Task.WhenAll(tasks.ToArray());
-
-                    break;
-
-                case ActType.Sequential:
-
-                    foreach (var plan in plans)
+                var tasks = new List<Task>();
+                    
+                performancePlans.ForEach(plan =>
+                {
+                    tasks.Add(Task.Run(async () =>
                     {
                         await plan.StartAsync();
-                    }
-
-                    break;
+                    }));
+                });
+                
+                await Task.WhenAll(tasks.ToArray());
+            }
+            
+            if (launchActType == ActType.Sequential)
+            {
+                foreach (var plan in performancePlans)
+                {
+                    await plan.StartAsync();
+                }
             }
         }
 
         ScenarioTimer.Time.Stop();
-
-        await this.StopAndWaitWatcher();
     }
-
-    private Scenario AddActs(ActType launchType, params UsersPerformancePlan[] performancePlan)
-    {
-        this._acts.Add(new(launchType, performancePlan));
-
-        return this;
-    }
-
-    private async Task StopAndWaitWatcher()
-    {
-        Console.WriteLine($"Info: Stop Reports");
-
-        foreach (var (_, plans) in this._acts)
-        {
-            foreach (var plan in plans)
-            {
-                plan.User.Watcher.Stop();
-            }
-        }
-
-        Console.WriteLine($"Info: Wait Reports");
-
-        await Task.WhenAll(this._reports.ToArray());
-    }
-
-    private void InitDefaultReport()
-    {
-        foreach (var (_, plans) in this._acts)
-        {
-            foreach (var plan in plans)
-            {
-                if (plan.User is BasicHttpUser)
-                    plan.User.Watcher.AddReport(HttpReportFileSingleton.GetInstance(this._projectName, this._testRunId));
-
-                if (plan.User is BasicGrpcUser)
-                    plan.User.Watcher.AddReport(GrpcReportFileSingleton.GetInstance(this._projectName, this._testRunId));
-
-                if (plan.User is BasicWebSocketUser)
-                    plan.User.Watcher.AddReport(WebSocketReportFileSingleton.GetInstance(this._projectName, this._testRunId));
-
-                //if (plan.User is BasicChromiumUser)
-                //    plan.User.Watcher.AddReport(ChromiumReportFileSingleton.GetInstance(this._projectName, this._testRunId));
-            }
-        }
-    }
-
-    private void StartWatcher()
-    {
-        this.InitDefaultReport();
-
-        foreach (var (_, plans) in this._acts)
-        {
-            foreach (var plan in plans)
-            {
-                Console.WriteLine($"Info: Start Reports");
-
-                var task = plan.User.Watcher.StartAsync();
-                this._reports.AddRange(task);
-            }
-        }
-    }
-
-    private readonly string _projectName;
-
-    private readonly string _testRunId;
-
-    private readonly List<KeyValuePair<ActType, UsersPerformancePlan[]>> _acts;
-
-    private readonly List<Task> _reports;
 }

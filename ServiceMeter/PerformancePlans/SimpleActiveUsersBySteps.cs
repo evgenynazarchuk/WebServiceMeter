@@ -24,32 +24,35 @@
 
 using System;
 using System.Threading.Tasks;
+using ServiceMeter.PerformancePlans.Basic;
 using ServiceMeter.Interfaces;
-using ServiceMeter.PerformancePlans;
 
-namespace ServiceMeter;
+namespace ServiceMeter.PerformancePlans;
 
-public sealed class ActiveUsersBySteps : BasicActiveUsersBySteps
+public sealed class UsersActiveBySteps : BasicUsersActiveBySteps
 {
-    public ActiveUsersBySteps(
+    public UsersActiveBySteps(
         ISimpleUser user,
+        /* Количество активных пользователей в первом шаге */
         int fromActiveUsersCount,
+        /* Количество активных пользователей в последнем шаге */
         int toActiveUsersCount,
+        /* Количество шагов */
         int usersStep,
+        /* Длительность шага */
         TimeSpan? stepPeriodDuration = null,
-        TimeSpan? performancePlanDuration = null,
-        int userLoopCount = 1)
+        /* Длительность нагрузки */
+        TimeSpan? performancePlanDuration = null)
         : base(user,
               fromActiveUsersCount,
               toActiveUsersCount,
               usersStep,
               stepPeriodDuration,
-              performancePlanDuration,
-              userLoopCount)
+              performancePlanDuration)
     { }
 
-    protected override Task InvokeUserAsync()
+    protected override Task StartUserAsync()
     {
-        return ((ISimpleUser)this.User).InvokeAsync(this.userLoopCount);
+        return ((ISimpleUser)this.User).StartAsync();
     }
 }

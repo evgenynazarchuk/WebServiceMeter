@@ -24,8 +24,10 @@
 
 using System.Reflection;
 using System.Text.Json;
+using ServiceMeter.Runner.Attributes;
+using ServiceMeter.Runner.Runner.TestRunnerWebService.DTOs;
 
-namespace ServiceMeter.Runner;
+namespace ServiceMeter.Runner.Runner.TestRunnerWebService.Services;
 
 public class TestRunnerService
 {

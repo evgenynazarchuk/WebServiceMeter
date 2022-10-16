@@ -24,7 +24,7 @@
 
 using System.Threading.Tasks;
 
-namespace ServiceMeter;
+namespace ServiceMeter.Extensions;
 
 public static class TaskExtension
 {

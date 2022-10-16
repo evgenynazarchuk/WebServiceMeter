@@ -25,18 +25,15 @@
 using System.Collections.Generic;
 using System.Net.Http;
 
-namespace ServiceMeter;
+namespace ServiceMeter.Extensions;
 
 public static class HttpClientExt
 {
-    public static void SetDefaultHeader(this HttpClient client, IDictionary<string, string>? headers)
+    public static void SetDefaultHeader(this HttpClient client, IDictionary<string, string> headers)
     {
-        if (headers is not null)
+        foreach (var (headerName, headerValue) in headers)
         {
-            foreach (var (headerName, headerValue) in headers)
-            {
-                client.DefaultRequestHeaders.Add(headerName, headerValue);
-            }
+            client.DefaultRequestHeaders.Add(headerName, headerValue);
         }
     }
 }

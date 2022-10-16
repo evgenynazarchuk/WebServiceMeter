@@ -23,9 +23,10 @@
  */
 
 using System.Reflection;
-using ServiceMeter.Runner;
+using ServiceMeter.Runner.Runner.TestRunnerWebService;
+using ServiceMeter.Runner.Runner.TestRunnerWebService.DTOs;
 
-namespace ServiceMeter;
+namespace ServiceMeter.Runner.Runner;
 
 public class TestRunner
 {

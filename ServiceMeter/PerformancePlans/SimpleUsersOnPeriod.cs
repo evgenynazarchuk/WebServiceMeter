@@ -24,10 +24,10 @@
 
 using System;
 using System.Threading.Tasks;
+using ServiceMeter.PerformancePlans.Basic;
 using ServiceMeter.Interfaces;
-using ServiceMeter.PerformancePlans;
 
-namespace ServiceMeter;
+namespace ServiceMeter.PerformancePlans;
 
 public sealed class UsersOnPeriod : BasicUsersOnPeriod
 {
@@ -35,18 +35,16 @@ public sealed class UsersOnPeriod : BasicUsersOnPeriod
         ISimpleUser user,
         int totalUsers,
         TimeSpan performancePlanDuration,
-        TimeSpan? minimalInvokePeriod = null,
-        int userLoopCount = 1)
+        TimeSpan? minimalInvokePeriod = null)
         : base(user,
               totalUsers,
               performancePlanDuration,
-              minimalInvokePeriod,
-              userLoopCount)
+              minimalInvokePeriod)
     { }
 
 
     protected override Task StartUserAsync()
     {
-        return ((ISimpleUser)this.User).InvokeAsync(this.userLoopCount);
+        return ((ISimpleUser)this.User).StartAsync();
     }
 }
