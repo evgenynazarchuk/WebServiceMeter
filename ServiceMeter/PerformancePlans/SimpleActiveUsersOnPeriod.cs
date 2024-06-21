@@ -24,26 +24,26 @@
 
 using System;
 using System.Threading.Tasks;
+using ServiceMeter.PerformancePlans.Basic;
 using ServiceMeter.Interfaces;
-using ServiceMeter.PerformancePlans;
 
-namespace ServiceMeter;
+namespace ServiceMeter.PerformancePlans;
 
-public sealed class ActiveUsersOnPeriod : BasicActiveUsersOnPeriod
+public sealed class UsersActiveOnPeriod : BasicUsersActiveOnPeriod
 {
-    public ActiveUsersOnPeriod(
+    public UsersActiveOnPeriod(
         ISimpleUser user,
+        /* Количество активных пользователей */
         int activeUsersCount,
-        TimeSpan performancePlanDuration,
-        int userLoopCount = 1)
+        /* Длительность нагрузки */
+        TimeSpan performancePlanDuration)
         : base(user,
               activeUsersCount,
-              performancePlanDuration,
-              userLoopCount)
+              performancePlanDuration)
     { }
 
-    protected override Task InvokeUserAsync()
+    protected override Task StartUserAsync()
     {
-        return ((ISimpleUser)this.User).InvokeAsync(this.userLoopCount);
+        return ((ISimpleUser)this.User).StartAsync();
     }
 }

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-namespace ServiceMeter.Users;
+namespace ServiceMeter.HttpTools.Tools.HttpTool.Users;
 
 public abstract partial class BasicJavascriptUser : BasicUser
 {

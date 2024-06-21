@@ -24,42 +24,43 @@
 
 using System;
 using System.Threading.Tasks;
+using ServiceMeter.PerformancePlans.Basic;
 using ServiceMeter.Interfaces;
-using ServiceMeter.PerformancePlans;
 
-namespace ServiceMeter;
+namespace ServiceMeter.PerformancePlans;
 
-public sealed class ActiveUsersBySteps<TData> : BasicActiveUsersBySteps
+public sealed class UsersActiveBySteps<TData> : BasicUsersActiveBySteps
         where TData : class
 {
-    private readonly IDataReader<TData> dataReader;
+    private readonly IDataReader<TData> _dataReader;
 
-    private readonly bool reuseDataInLoop;
-
-    public ActiveUsersBySteps(
+    public UsersActiveBySteps(
         ITypedUser<TData> user,
         int fromActiveUsersCount,
         int toActiveUsersCount,
         int usersStep,
         IDataReader<TData> dataReader,
         TimeSpan? stepPeriodDuration = null,
-        TimeSpan? performancePlanDuration = null,
-        int userLoopCount = 1,
-        bool reuseDataInLoop = true)
+        TimeSpan? performancePlanDuration = null)
         : base(user,
               fromActiveUsersCount,
               toActiveUsersCount,
               usersStep,
               stepPeriodDuration,
-              performancePlanDuration,
-              userLoopCount)
+              performancePlanDuration)
     {
-        this.dataReader = dataReader;
-        this.reuseDataInLoop = reuseDataInLoop;
+        this._dataReader = dataReader;
     }
 
-    protected override Task InvokeUserAsync()
+    protected override Task StartUserAsync()
     {
-        return ((ITypedUser<TData>)this.User).InvokeAsync(this.dataReader, this.reuseDataInLoop, this.userLoopCount);
+        var data = this._dataReader.GetData();
+
+        if (data is null)
+        {
+            return Task.CompletedTask;
+        }
+        
+        return ((ITypedUser<TData>)this.User).StartAsync(data);
     }
 }

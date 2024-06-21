@@ -23,21 +23,20 @@
  */
 
 using System.Threading.Tasks;
+using ServiceMeter.PerformancePlans.Basic;
 using ServiceMeter.Interfaces;
-using ServiceMeter.PerformancePlans;
 
-namespace ServiceMeter;
+namespace ServiceMeter.PerformancePlans;
 
-public sealed class ConstantUsers : BasicConstantUsers
+public sealed class UsersConstant : BasicUsersConstant
 {
-    public ConstantUsers(
+    public UsersConstant(
         ISimpleUser user,
-        int usersCount,
-        int userLoopCount = 1)
-        : base(user, usersCount, userLoopCount) { }
+        int usersCount)
+        : base(user, usersCount) { }
 
-    public override Task InvokeUserAsync()
+    protected override Task StartUserAsync()
     {
-        return ((ISimpleUser)this.User).InvokeAsync(this.userLoopCount);
+        return ((ISimpleUser)this.User).StartAsync();
     }
 }

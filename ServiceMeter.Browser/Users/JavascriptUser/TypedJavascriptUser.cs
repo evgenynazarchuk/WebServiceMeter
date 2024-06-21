@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
-using ServiceMeter.Interfaces;
-using ServiceMeter.Users;
+using ServiceMeter.HttpTools.Tools.HttpTool.Interfaces;
+using ServiceMeter.HttpTools.Tools.HttpTool.Users;
 
-namespace ServiceMeter;
+namespace ServiceMeter.HttpTools.Tools.HttpTool;
 
 public abstract partial class JavascriptUser<TData> : BasicJavascriptUser, ITypedUser<TData>
         where TData : class

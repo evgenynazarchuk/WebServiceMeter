@@ -22,16 +22,15 @@
  * SOFTWARE.
  */
 
-using System;
 using System.Threading.Tasks;
 
 namespace ServiceMeter.Interfaces;
 
 public interface IReport
 {
-    Task StartAsync();
+    Task StartReportProcessAsync();
 
-    void Stop();
+    void StopReportProcess();
 
-    void SendLogMessage(string logName, string logMessage, Type logMessageType);
+    void SendMessage(string logMessage);
 }

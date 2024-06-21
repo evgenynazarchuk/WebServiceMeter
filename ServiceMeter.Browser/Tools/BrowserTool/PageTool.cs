@@ -23,10 +23,10 @@
  */
 
 using Microsoft.Playwright;
-using ServiceMeter.Reports;
-using ServiceMeter.Support;
+using ServiceMeter.HttpTools.Tools.HttpTool.Reports;
+using ServiceMeter.HttpTools.Tools.HttpTool.Support;
 
-namespace ServiceMeter.Tools;
+namespace ServiceMeter.HttpTools.Tools.HttpTool.Tools;
 
 public class PageTool : Tool
 {

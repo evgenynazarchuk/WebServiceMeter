@@ -24,7 +24,7 @@
 
 using System;
 
-namespace ServiceMeter;
+namespace ServiceMeter.Extensions;
 
 public static class TimeExtension
 {

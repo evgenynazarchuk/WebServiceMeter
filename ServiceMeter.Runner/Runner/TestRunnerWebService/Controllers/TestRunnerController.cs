@@ -23,8 +23,10 @@
  */
 
 using Microsoft.AspNetCore.Mvc;
+using ServiceMeter.Runner.Runner.TestRunnerWebService.Services;
+using ServiceMeter.Runner.Runner.TestRunnerWebService.DTOs;
 
-namespace ServiceMeter.Runner;
+namespace ServiceMeter.Runner.Runner.TestRunnerWebService.Controllers;
 
 [Controller]
 [Route("[controller]/[action]")]

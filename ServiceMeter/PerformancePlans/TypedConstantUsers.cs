@@ -23,32 +23,34 @@
  */
 
 using System.Threading.Tasks;
+using ServiceMeter.PerformancePlans.Basic;
 using ServiceMeter.Interfaces;
-using ServiceMeter.PerformancePlans;
 
-namespace ServiceMeter;
+namespace ServiceMeter.PerformancePlans;
 
-public sealed class ConstantUsers<TData> : BasicConstantUsers
+public sealed class UsersConstant<TData> : BasicUsersConstant
         where TData : class
 {
-    private readonly IDataReader<TData> dataReader;
+    private readonly IDataReader<TData> _dataReader;
 
-    private readonly bool reuseDataInLoop;
-
-    public ConstantUsers(
+    public UsersConstant(
         ITypedUser<TData> user,
         int usersCount,
-        IDataReader<TData> dataReader,
-        int userLoopCount = 1,
-        bool reuseDataInLoop = true)
-        : base(user, usersCount, userLoopCount)
+        IDataReader<TData> dataReader)
+        : base(user, usersCount)
     {
-        this.dataReader = dataReader;
-        this.reuseDataInLoop = reuseDataInLoop;
+        this._dataReader = dataReader;
     }
 
-    public override Task InvokeUserAsync()
+    protected override Task StartUserAsync()
     {
-        return ((ITypedUser<TData>)this.User).InvokeAsync(this.dataReader, this.reuseDataInLoop, this.userLoopCount);
+        var data = this._dataReader.GetData();
+
+        if (data is null)
+        {
+            return Task.CompletedTask;
+        }
+        
+        return ((ITypedUser<TData>)this.User).StartAsync(data);
     }
 }

@@ -28,7 +28,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 
-namespace ServiceMeter.Runner;
+namespace ServiceMeter.HttpTools.Tools.HttpTool.Runner;
 
 public class TestRunnerStartup
 {

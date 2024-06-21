@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-namespace ServiceMeter.Reports;
+namespace ServiceMeter.HttpTools.Tools.HttpTool.Reports;
 
 public class ChromiumReportFileSingleton
 {

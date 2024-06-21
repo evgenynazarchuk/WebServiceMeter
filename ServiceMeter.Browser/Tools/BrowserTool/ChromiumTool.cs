@@ -23,9 +23,9 @@
  */
 
 using Microsoft.Playwright;
-using ServiceMeter.Tools;
+using ServiceMeter.HttpTools.Tools.HttpTool.Tools;
 
-namespace ServiceMeter;
+namespace ServiceMeter.HttpTools.Tools.HttpTool;
 
 public class ChromiumTool : Tool, IAsyncDisposable
 {

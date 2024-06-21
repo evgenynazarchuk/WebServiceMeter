@@ -26,9 +26,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Reflection;
-using ServiceMeter.Runner;
+using ServiceMeter.HttpTools.Tools.HttpTool.Runner;
+using ServiceMeter.Runner.Runner.TestRunnerWebService.DTOs;
+using ServiceMeter.Runner.Runner.TestRunnerWebService.Services;
 
-namespace ServiceMeter;
+namespace ServiceMeter.Runner.Runner.TestRunnerWebService;
 
 public class WebRunner
 {
